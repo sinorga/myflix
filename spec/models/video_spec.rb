@@ -13,4 +13,14 @@ describe Video do
 
     expect(sin_city.category).to eq(tv)
   end
+
+  it "does not save video without a title" do
+    sin_city = Video.create(description: "a great drama!")
+    expect(Video.count).to eq(0)
+  end
+
+  it "does not save video without a description" do
+    sin_city = Video.create(title: "Sin City")
+    expect(Video.count).to eq(0)
+  end
 end
