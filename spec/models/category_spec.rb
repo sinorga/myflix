@@ -5,7 +5,7 @@ describe Category do
 
   describe "#recent_videos" do
     context "when there are less than 6 video in the category" do
-      let!(:tv) { Category.create(name: "tv") }
+      let(:tv) { Category.create(name: "tv") }
       let!(:run_away) { Video.create(category: tv, title: "Run Away", description: "a great movie", created_at: 2.day.ago) }
       let!(:home_run) { Video.create(category: tv, title: "Home Run", description: "a baseball movie", created_at: 1.day.ago) }
       let!(:sin_city) { Video.create(category: tv, title: "Sin City", description: "a good drama") }
@@ -20,11 +20,11 @@ describe Category do
     end
 
     context "when there are more than 6 video in the category" do
-      let!(:tv) { Category.create(name: "tv") }
+      let(:tv) { Category.create(name: "tv") }
       let!(:dummy) do
         6.times { Video.create(category: tv, title: "video", description: "a video") }
       end
-      let!(:one_piece) {Video.create(category: tv, title: "One Piece", description: "a great cartoon", created_at: 6.day.ago)}
+      let(:one_piece) {Video.create(category: tv, title: "One Piece", description: "a great cartoon", created_at: 6.day.ago)}
 
       it "returns 6 videos" do
         expect(tv.recent_videos.count).to eq(6)
@@ -36,7 +36,7 @@ describe Category do
     end
 
     context "when there is not any video in the category" do
-      let!(:movie) { Category.create(name: "movie") }
+      let(:movie) { Category.create(name: "movie") }
       it "returns an empty array" do
         expect(movie.recent_videos).to eq([])
       end

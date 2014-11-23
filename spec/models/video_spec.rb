@@ -5,7 +5,7 @@ describe Video do
   it { should validate_presence_of(:title) }
   it { should validate_presence_of(:description) }
 
-  context "search video by title" do
+  describe ".search_by_title" do
     let!(:run_away) { Video.create(title: "Run Away", description: "a great movie", created_at: 1.day.ago) }
     let!(:home_run) { Video.create(title: "Home Run", description: "a baseball movie") }
     let!(:sin_city) { Video.create(title: "Sin City", description: "a good drama") }
