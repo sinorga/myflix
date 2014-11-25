@@ -4,3 +4,9 @@ Fabricator(:user) do
   password { Faker::Internet.password }
   full_name { Faker::Name.name }
 end
+
+Fabricator(:invalid_user, from: :user) do
+  email nil
+  password { Faker::Internet.password }
+  full_name { Faker::Name.name }
+end
