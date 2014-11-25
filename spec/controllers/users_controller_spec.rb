@@ -37,8 +37,12 @@ describe UsersController do
         expect(User.count).to eq(0)
       end
 
-      it "renders new template" do
+      it "renders the :new template" do
         expect(response).to render_template :new
+      end
+
+      it "sets @user variable" do
+        expect(assigns(:user)).to be_a_new(User)
       end
     end
   end
