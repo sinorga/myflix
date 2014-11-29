@@ -6,9 +6,9 @@ describe Category do
   describe "#recent_videos" do
     context "when there are less than 6 video in the category" do
       let(:tv) { Category.create(name: "tv") }
-      let!(:run_away) { Video.create(category: tv, title: "Run Away", description: "a great movie", created_at: 2.day.ago) }
-      let!(:home_run) { Video.create(category: tv, title: "Home Run", description: "a baseball movie", created_at: 1.day.ago) }
-      let!(:sin_city) { Video.create(category: tv, title: "Sin City", description: "a good drama") }
+      let!(:run_away) { Fabricate(:video, category: tv, created_at: 2.day.ago) }
+      let!(:home_run) { Fabricate(:video, category: tv, created_at: 1.day.ago) }
+      let!(:sin_city) { Fabricate(:video, category: tv) }
 
       it "returns the videos in the reverse chronical order by created at" do
         expect(tv.recent_videos).to eq([sin_city, home_run, run_away])
