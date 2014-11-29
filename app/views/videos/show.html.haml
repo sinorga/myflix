@@ -35,7 +35,7 @@
           %input(type="submit" value="Submit" class="btn")
           %a(href="") Cancel
       %header
-        %h3= "User Reviews (#{@video.reviews.count})"
+        %h3= "User Reviews (#{@reviews.count})"
       %ul
         - @video.recent_reviews.each do |review|
           %article.review
