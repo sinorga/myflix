@@ -12,16 +12,23 @@ categories = Category.create([
   {name: "Cartoon"}
   ])
 
-users = Fabricate.times(5, :user)
+users = Fabricate.times(3, :user)
+ooo_user = User.create(email: "ooo@gmail.com", password: "123456", full_name: "Mr. Ooo")
+users << ooo_user
 
-Fabricate.times(20, :video) do
+videos = Fabricate.times(20, :video) do
   category_id (1..categories.count).to_a.sample
-  reviews { 20.times.map { Fabricate(:review) do
-    user_id (1..users.count).to_a.sample
-  end
-  } }
 
   pic = ["t2", "monk"].sample
   large_cover_url "/tmp/#{pic}_large.jpg"
   small_cover_url "/tmp/#{pic}.jpg"
+end
+
+reviews = Fabricate.times(100, :review) do
+  video videos.sample
+  user users.sample
+end
+
+queue_items = 10.times.each do |i|
+  QueueItem.create(video: videos[i], user: ooo_user, position: i)
 end
