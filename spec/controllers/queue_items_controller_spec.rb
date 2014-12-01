@@ -9,9 +9,9 @@ describe QueueItemsController do
     it "sets @queue_items of with authenticated user" do
       user = Fabricate(:user)
       session[:user_id] = user.id
-      queue_item1 = QueueItem.create(position: 1, user: user)
-      queue_item2 = QueueItem.create(position: 2, user: Fabricate(:user))
-      queue_item3 = QueueItem.create(position: 3, user: user)
+      queue_item1 = Fabricate(:queue_item, user: user)
+      queue_item2 = Fabricate(:queue_item, user: Fabricate(:user))
+      queue_item3 = Fabricate(:queue_item, user: user)
       get :index
       expect(assigns(:queue_items)).to match_array([queue_item1, queue_item3])
     end
