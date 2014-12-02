@@ -12,9 +12,9 @@ Myflix::Application.routes.draw do
       get 'search'
     end
     resources :reviews, only: [:create]
+    resources :queue_items, only: [:create]
   end
   resources :categories
   resources :users, only: [:create]
   resources :sessions, only: [:create]
-  resources :queue_items, only: [:index]
 end

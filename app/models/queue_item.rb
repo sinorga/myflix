@@ -1,7 +1,14 @@
 class QueueItem < ActiveRecord::Base
   belongs_to :user
   belongs_to :video
-  validates_uniqueness_of :position
+
+  default_scope { order(:position) }
+  before_validation :assign_position
+
+  validates_uniqueness_of :video_id, scope: [:user_id]
+  #validates_uniqueness_of :position, scope: [:video_id, :user_id]
+  validates_presence_of :user_id, :video_id
+
 
   delegate :category, to: :video
   delegate :title, to: :video, prefix: :video
@@ -14,5 +21,20 @@ class QueueItem < ActiveRecord::Base
 
   def category_name
     video.category.name
+  end
+
+  protected
+  def assign_position
+    unless position
+      self.position = 1 + (last_position || 0)
+    end
+  end
+
+  def last_position
+    if QueueItem.last
+      QueueItem.last.position
+    else
+      0
+    end
   end
 end

@@ -30,5 +30,5 @@ reviews = Fabricate.times(100, :review) do
 end
 
 queue_items = 10.times.each do |i|
-  QueueItem.create(video: videos[i], user: ooo_user, position: i)
+  QueueItem.create(video: videos[i], user: ooo_user)
 end
