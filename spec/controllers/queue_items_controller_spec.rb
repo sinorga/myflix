@@ -52,4 +52,35 @@ describe QueueItemsController do
 
     end
   end
+
+  describe "DELETE destroy" do
+    context "with authenticated user" do
+      let(:user) { Fabricate(:user) }
+      let(:queue_item) { Fabricate(:queue_item, user: user) }
+      before do
+        session[:user_id] = user.id
+      end
+
+      it "redirects to my queue page" do
+        delete :destroy, id: queue_item.id
+        expect(response).to redirect_to my_queue_path
+      end
+      it "deletes the queue item" do
+        delete :destroy, id: queue_item.id
+        expect(QueueItem.count).to eq(0)
+      end
+
+      it "dose not delete the queue item if the user does not own the queue item" do
+        user2 = Fabricate(:user)
+        queue_item2 =  Fabricate(:queue_item, user: user2)
+        delete :destroy, id: queue_item2.id
+        expect(QueueItem.count).to eq(1)
+      end
+    end
+    it "redirects to sign in page for unauthenticate user" do
+      queue_item = Fabricate(:queue_item)
+      delete :destroy, id: queue_item.id
+      expect(response).to redirect_to sign_in_path
+    end
+  end
 end
