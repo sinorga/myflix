@@ -61,9 +61,10 @@ describe QueueItem do
       queue_item.save
     end
     it "sets the greatest position index to queue_item if position is not specified" do
-      Fabricate(:queue_item, position: 1)
-      Fabricate(:queue_item, position: 2)
-      queue_item = Fabricate(:queue_item)
+      user = Fabricate(:user)
+      Fabricate(:queue_item, user: user, position: 1)
+      Fabricate(:queue_item, user: user, position: 2)
+      queue_item = Fabricate(:queue_item, user: user)
       expect(queue_item.position).to eq(3)
     end
   end

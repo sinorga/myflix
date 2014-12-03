@@ -31,8 +31,8 @@ class QueueItem < ActiveRecord::Base
   end
 
   def last_position
-    if QueueItem.last
-      QueueItem.last.position
+    if user_id && !QueueItem.where(user_id: user_id).empty?
+      QueueItem.where(user_id: user_id).last.position
     else
       0
     end

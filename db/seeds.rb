@@ -29,6 +29,6 @@ reviews = Fabricate.times(100, :review) do
   user users.sample
 end
 
-queue_items = 10.times.each do |i|
-  QueueItem.create(video: videos[i], user: ooo_user)
+queue_items = 50.times.each do |i|
+  QueueItem.create(video: videos[i], user_id: (1..users.count).to_a.sample)
 end
