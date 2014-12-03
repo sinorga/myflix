@@ -8,7 +8,7 @@ class ReviewsController < ApplicationController
     else
       @reviews = @video.reviews.reload
       @new_review = Review.new
-      render template: 'videos/show'
+      render 'videos/show'
     end
   end
 
