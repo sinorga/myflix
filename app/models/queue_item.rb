@@ -6,7 +6,7 @@ class QueueItem < ActiveRecord::Base
   before_validation :assign_position
 
   validates_uniqueness_of :video_id, scope: [:user_id]
-  #validates_uniqueness_of :position, scope: [:video_id, :user_id]
+  validates_uniqueness_of :position, scope: [:user_id]
   validates_presence_of :user_id, :video_id
 
 

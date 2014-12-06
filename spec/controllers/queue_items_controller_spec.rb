@@ -83,4 +83,55 @@ describe QueueItemsController do
       expect(response).to redirect_to sign_in_path
     end
   end
+
+  describe "PUT update" do
+    context "with authenticated user" do
+      let(:user) { Fabricate(:user) }
+      let(:queue_item1) { Fabricate(:queue_item, user: user) }
+      let(:queue_item2) { Fabricate(:queue_item, user: user) }
+
+      before do
+        session[:user_id] = user.id
+      end
+
+      it "redirects to my_queue page" do
+        put :update, queue_items: {queue_item1.id => {position: 2}}
+        expect(response).to redirect_to my_queue_path
+      end
+      it "updates record of an queue_item position" do
+        put :update, queue_items: {queue_item1.id => {position: 2}}
+        expect(QueueItem.first.position).to eq(2)
+      end
+
+      it "updates multiple records of queue_item position at once" do
+        put :update, queue_items: {
+          queue_item1.id => {position: 4},
+          queue_item2.id => {position: 3}
+        }
+        expect(QueueItem.find(queue_item1.id).position).to eq(4)
+        expect(QueueItem.find(queue_item2.id).position).to eq(3)
+      end
+
+      it "won't change any records if one of queue_item is not exist" do
+        put :update, queue_items: {
+          queue_item1.id => {position: 4},
+          8 => {position: 3}
+        }
+        expect(QueueItem.find(queue_item1.id).position).to eq(1)
+      end
+      it "won't change any records if position is the same" do
+        put :update, queue_items: {
+          queue_item1.id => {position: 3},
+          queue_item2.id => {position: 3},
+        }
+        expect(QueueItem.find(queue_item1.id).position).to eq(1)
+        expect(QueueItem.find(queue_item2.id).position).to eq(2)
+      end
+    end
+    it "redirects to sign in page for unauthenticate user" do
+      queue_item = Fabricate(:queue_item)
+      put :update, queue_items: {queue_item.id => {position: 2}}
+      expect(response).to redirect_to sign_in_path
+    end
+  end
 end
