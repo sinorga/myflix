@@ -19,7 +19,7 @@ Myflix::Application.routes.draw do
   resources :sessions, only: [:create]
   resources :queue_items, only: [:destroy] do
     collection do
-      put 'update'
+      put 'update', action: :update_queue
     end
   end
 end
