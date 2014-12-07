@@ -6,7 +6,7 @@ describe QueueItem do
   it { should validate_uniqueness_of(:video_id).scoped_to(:user_id)}
   it { should validate_presence_of(:video_id) }
   it { should validate_presence_of(:user_id) }
-  #it { should validate_uniqueness_of(:position) }
+  it { should validate_numericality_of(:position).only_integer }
 
   describe "#video_title" do
     it "returns the title of the associated video" do
@@ -31,6 +31,32 @@ describe QueueItem do
       queue_item = Fabricate(:queue_item, user: user, video: video)
 
       expect(queue_item.rating).to eq(nil)
+    end
+  end
+
+  describe "#rating=" do
+    let(:queue_item) { Fabricate(:queue_item) }
+    it "creates review record if review does not present" do
+      queue_item.update(rating: 2)
+      expect(Review.count).to eq(1)
+      expect(queue_item.rating).to eq(2)
+    end
+
+    it "ignores rating with empty string if review does not present" do
+      queue_item.update(rating: "")
+      expect(Review.count).to eq(0)
+    end
+
+    it "updates review record if review present" do
+      review = Fabricate(:review, user: queue_item.user, video: queue_item.video, rating: 1)
+      queue_item.update(rating: 3)
+      expect(queue_item.rating).to eq(3)
+    end
+
+    it "delete review record with empty rating if review present" do
+      review = Fabricate(:review, user: queue_item.user, video: queue_item.video, rating: 1)
+      queue_item.update(rating: "")
+      expect(Review.count).to eq(0)
     end
   end
 

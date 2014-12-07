@@ -10,11 +10,33 @@ class QueueItemsController < ApplicationController
     redirect_to my_queue_path
   end
 
+  def update_queue
+    begin
+      update_queue_items
+    rescue
+      flash[:danger] = "Invalid inputs."
+    end
+
+    current_user.normalize_queue_items
+    redirect_to my_queue_path
+  end
+
   def destroy
     queue_item = current_user.queue_items.find_by_id(params[:id])
-    if queue_item
-      queue_item.destroy
+    if queue_item.try(:destroy)
+      current_user.normalize_queue_items
     end
     redirect_to my_queue_path
+  end
+
+  private
+
+  def update_queue_items
+    QueueItem.transaction do
+      params[:queue_items].each do |key, value|
+        queue_item = current_user.queue_items.find(key)
+        queue_item.update!(position: value[:position], rating: value[:rating])
+      end
+    end
   end
 end

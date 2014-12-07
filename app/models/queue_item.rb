@@ -6,7 +6,7 @@ class QueueItem < ActiveRecord::Base
   before_validation :assign_position
 
   validates_uniqueness_of :video_id, scope: [:user_id]
-  #validates_uniqueness_of :position, scope: [:video_id, :user_id]
+  validates_numericality_of :position, { only_integer: true }
   validates_presence_of :user_id, :video_id
 
 
@@ -15,8 +15,21 @@ class QueueItem < ActiveRecord::Base
 
 
   def rating
-    review = Review.find_by(user_id: user.id, video_id: video.id)
     review.rating if review
+  end
+
+  def rating=(new_rating)
+    if review
+      if new_rating.to_s != ''
+        review.update!(rating: new_rating)
+      else
+        review.destroy!
+      end
+    elsif new_rating.to_s != ''
+      review = Review.new(user_id: user.id, video: video, rating: new_rating)
+      review.skip_content = true
+      review.save!
+    end
   end
 
   def category_name
@@ -24,6 +37,10 @@ class QueueItem < ActiveRecord::Base
   end
 
   protected
+  def review
+    @review ||= Review.find_by(user_id: user.id, video_id: video.id)
+  end
+
   def assign_position
     unless position
       self.position = 1 + (last_position || 0)
