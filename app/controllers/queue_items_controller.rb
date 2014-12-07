@@ -35,8 +35,7 @@ class QueueItemsController < ApplicationController
     QueueItem.transaction do
       params[:queue_items].each do |key, value|
         queue_item = current_user.queue_items.find(key)
-        queue_item.update!(position: value[:position])
-        current_user.update_review(queue_item.video, value[:rating])
+        queue_item.update!(position: value[:position], rating: value[:rating])
       end
     end
   end

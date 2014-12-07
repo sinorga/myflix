@@ -10,15 +10,4 @@ class User < ActiveRecord::Base
       queue_item.update(position: index+1)
     end
   end
-
-  def update_review(video, rating)
-    review = reviews.find_by(video_id: video.id)
-    if review
-      review.update!(rating: rating)
-    elsif rating.to_s != ''
-      review = reviews.build(video: video, rating: rating)
-      review.skip_content = true
-      review.save!
-    end
-  end
 end

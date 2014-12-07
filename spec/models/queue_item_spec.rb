@@ -34,6 +34,32 @@ describe QueueItem do
     end
   end
 
+  describe "#rating=" do
+    let(:queue_item) { Fabricate(:queue_item) }
+    it "creates review record if review does not present" do
+      queue_item.update(rating: 2)
+      expect(Review.count).to eq(1)
+      expect(queue_item.rating).to eq(2)
+    end
+
+    it "ignores rating with empty string if review does not present" do
+      queue_item.update(rating: "")
+      expect(Review.count).to eq(0)
+    end
+
+    it "updates review record if review present" do
+      review = Fabricate(:review, user: queue_item.user, video: queue_item.video, rating: 1)
+      queue_item.update(rating: 3)
+      expect(queue_item.rating).to eq(3)
+    end
+
+    it "delete review record with empty rating if review present" do
+      review = Fabricate(:review, user: queue_item.user, video: queue_item.video, rating: 1)
+      queue_item.update(rating: "")
+      expect(Review.count).to eq(0)
+    end
+  end
+
   describe "#category_name" do
     it "returns the category's name of the video" do
       category = Fabricate(:category, name: "TV")

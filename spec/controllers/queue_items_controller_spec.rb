@@ -94,62 +94,47 @@ describe QueueItemsController do
 
   describe "PUT update" do
     context "with authenticated user" do
-      let(:user) { Fabricate(:user) }
-      let(:queue_item1) { Fabricate(:queue_item, user: user) }
-      let(:queue_item2) { Fabricate(:queue_item, user: user) }
+      context "with valid input" do
+        let(:user) { Fabricate(:user) }
+        let(:queue_item1) { Fabricate(:queue_item, user: user) }
+        let(:queue_item2) { Fabricate(:queue_item, user: user) }
 
-      before do
-        session[:user_id] = user.id
-      end
+        before do
+          session[:user_id] = user.id
+        end
 
-      it "redirects to my_queue page" do
-        put :update_queue, queue_items: {queue_item1.id => {position: 2}}
-        expect(response).to redirect_to my_queue_path
-      end
+        it "redirects to my_queue page" do
+          put :update_queue, queue_items: {queue_item1.id => {position: 2}}
+          expect(response).to redirect_to my_queue_path
+        end
 
-      it "reorders the queue_items" do
-        put :update_queue, queue_items: {
-          queue_item1.id => {position: 4},
-          queue_item2.id => {position: 3}
-        }
+        it "reorders the queue_items" do
+          put :update_queue, queue_items: {
+            queue_item1.id => {position: 4},
+            queue_item2.id => {position: 3}
+          }
 
-        expect(user.queue_items).to eq([queue_item2, queue_item1])
-      end
+          expect(user.queue_items).to eq([queue_item2, queue_item1])
+        end
 
-      it "normalizes the positions" do
-        put :update_queue, queue_items: {
-          queue_item1.id => {position: 4},
-          queue_item2.id => {position: 3}
-        }
-        expect(user.queue_items.map(&:position)).to eq([1, 2])
-      end
-
-      it "creates review record if signed in user haven't reviewed the video" do
-        put :update_queue, queue_items: {
-          queue_item1.id => {position: 1, rating: 3}
-        }
-        review = Review.where(user_id: user.id, video_id: queue_item1.video.id).first
-        expect(review.rating).to eq(3)
-
-      end
-
-      it "ignores rating with empty string if signed in user haven't reviewed the video" do
-        put :update_queue, queue_items: {
-          queue_item1.id => {position: 2, rating: ""},
-          queue_item2.id => {position: 1, rating: 5}
-        }
-        expect(user.queue_items).to eq([queue_item2, queue_item1])
-      end
-
-      it "updates review record if the sign in user had reviewd video before" do
-        review = Fabricate(:review, user: user, video: queue_item1.video, rating: 1)
-        put :update_queue, queue_items: {
-          queue_item1.id => {position: 1, rating: 3}
-        }
-        expect(review.reload.rating).to eq(3)
+        it "normalizes the positions" do
+          put :update_queue, queue_items: {
+            queue_item1.id => {position: 4},
+            queue_item2.id => {position: 3}
+          }
+          expect(user.queue_items.map(&:position)).to eq([1, 2])
+        end
       end
 
       context "whit invalid input" do
+        let(:user) { Fabricate(:user) }
+        let(:queue_item1) { Fabricate(:queue_item, user: user) }
+        let(:queue_item2) { Fabricate(:queue_item, user: user) }
+
+        before do
+          session[:user_id] = user.id
+        end
+
         it "sets flash error message" do
           put :update_queue, queue_items: {
             queue_item1.id => {position: "abc"}
@@ -171,24 +156,6 @@ describe QueueItemsController do
             queue_item3.id => {position: 4}
           }
           expect(queue_item3.reload.position).to eq(1)
-        end
-
-        it "doesn't change record if create review failed" do
-          put :update_queue, queue_items: {
-            queue_item1.id => {position: 2, rating: -1},
-            queue_item2.id => {position: 1, rating: 5}
-          }
-          expect(user.queue_items).to eq([queue_item1, queue_item2])
-        end
-
-        it "doesn't change record if update review with empty rating" do
-          review = Fabricate(:review, user: user, video: queue_item1.video, rating: 1)
-          put :update_queue, queue_items: {
-            queue_item1.id => {position: 2, rating: ""},
-            queue_item2.id => {position: 1, rating: 5}
-          }
-          expect(review.reload.rating).to eq(1)
-          expect(user.queue_items).to eq([queue_item1, queue_item2])
         end
       end
     end
