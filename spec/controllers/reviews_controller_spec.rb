@@ -1,18 +1,16 @@
 require 'spec_helper'
 
 describe ReviewsController do
+  before { sign_in_user }
+  
   describe "POST create" do
-    it "redirects to sign in page for unauthenticated user" do
-      video = Fabricate(:video)
-      post :create, video_id: video.id
-      expect(response).to redirect_to sign_in_path
+    it_behaves_like "require_login" do
+      let(:video) { Fabricate(:video) }
+      let(:action) { post :create, video_id: video.id }
     end
 
     context "with authenticated user" do
       let(:video) { Fabricate(:video) }
-      before do
-        session[:user_id] = Fabricate(:user).id
-      end
 
       context "with valid input" do
         before do
