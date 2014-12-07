@@ -1,8 +1,8 @@
 require 'spec_helper'
 
 describe VideosController do
-  before { sign_in_user }
-  
+  before { set_user }
+
   describe "GET show" do
     it_behaves_like "require_login" do
       let(:video) { Fabricate(:video) }

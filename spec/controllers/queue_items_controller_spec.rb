@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe QueueItemsController do
-  before { sign_in_user }
+  before { set_user }
 
   describe "GET index" do
     it_behaves_like "require_login" do

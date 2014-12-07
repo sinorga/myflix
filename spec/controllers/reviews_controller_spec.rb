@@ -1,8 +1,8 @@
 require 'spec_helper'
 
 describe ReviewsController do
-  before { sign_in_user }
-  
+  before { set_user }
+
   describe "POST create" do
     it_behaves_like "require_login" do
       let(:video) { Fabricate(:video) }
