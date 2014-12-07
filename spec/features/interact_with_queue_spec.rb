@@ -11,25 +11,22 @@ feature "User interacts with the queue" do
 
     add_video_to_queue(video1)
     expect_video_to_be_in_queue(video1)
-    queue_item1 = QueueItem.last
 
     visit video_path(video1)
     expect_button_not_to_be_seen("+ My Queue")
 
     add_video_to_queue(video2)
-    queue_item2 = QueueItem.last
     add_video_to_queue(video3)
-    queue_item3 = QueueItem.last
 
-    set_queue_item_position(queue_item1, 3)
-    set_queue_item_position(queue_item2, 1)
-    set_queue_item_position(queue_item3, 2)
+    set_video_position(video1, 3)
+    set_video_position(video2, 1)
+    set_video_position(video3, 2)
 
     update_queue
 
-    expect_queue_item_postion(queue_item1, 3)
-    expect_queue_item_postion(queue_item2, 1)
-    expect_queue_item_postion(queue_item3, 2)
+    expect_video_postion(video1, 3)
+    expect_video_postion(video2, 1)
+    expect_video_postion(video3, 2)
 
   end
 
@@ -44,19 +41,21 @@ feature "User interacts with the queue" do
   def update_queue
     click_on "Update Instant Queue"
   end
-    
+
   def add_video_to_queue(video)
     visit home_path
     find("a[href='/videos/#{video.id}']").click
     click_on "+ My Queue"
   end
 
-  def set_queue_item_position(queue_item, position)
-    fill_in "queue_items_#{queue_item.id}_position", with: position
+  def set_video_position(video, position)
+    within(:xpath, "//tr[contains(.,'#{video.title}')]") do
+      find("input[id$='_position']").set(position)
+    end
   end
 
-  def expect_queue_item_postion(queue_item, position)
-    expect(find("input[id='queue_items_#{queue_item.id}_position']").value).to eq(position.to_s)
+  def expect_video_postion(video, position)
+    expect(find(:xpath, "//tr[contains(.,'#{video.title}')]//input[@type='text']").value).to eq(position.to_s)
   end
 
 end
