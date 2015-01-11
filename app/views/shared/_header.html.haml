@@ -18,6 +18,6 @@
             %b.caret
           %ul.dropdown-menu(role="menu" aria-labelledby="dlabel")
             %li
-              %a(href="#") Account
+              = link_to "Account", user_path(current_user) 
               %a(href="#") Plan and Billing
               = link_to "Sign Out", sign_out_path

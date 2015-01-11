@@ -46,4 +46,28 @@ describe UsersController do
       end
     end
   end
+
+  describe "GET show" do
+    before { set_user }
+    let(:alice) {Fabricate(:user)}
+    it_behaves_like "require_login" do
+      let(:action) { get :show, id: alice.id }
+    end
+
+    it "sets @user variable" do
+      get :show, id: alice.id
+      expect(assigns(:user)).to eq(alice)
+    end
+
+    it "sets @queue_items variable" do
+      get :show, id: alice.id
+      expect(assigns(:queue_items)).to eq(alice.queue_items)
+    end
+
+    it "sets @reviews variable" do
+      get :show, id: alice.id
+      expect(assigns(:reviews)).to eq(alice.reviews)
+    end
+
+  end
 end
