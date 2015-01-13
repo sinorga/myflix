@@ -68,6 +68,5 @@ describe UsersController do
       get :show, id: alice.id
       expect(assigns(:reviews)).to eq(alice.reviews)
     end
-
   end
 end
