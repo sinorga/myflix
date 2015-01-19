@@ -1,12 +1,22 @@
 class FolloweesController < ApplicationController
-  before_action :require_user, only: [:index, :destroy]
+  before_action :require_user
   def index
     @followees = current_user.followees
   end
 
   def destroy
-    followee = current_user.followees.find_by(id: params[:id])
-    followee.destroy if followee
+
+    followee = current_user.followees.find_by_id(params[:id])
+    current_user.followees.delete(followee) if followee
     redirect_to people_path
   end
+
+  def create
+    followee = User.find_by(id: params[:followee_id])
+    if followee
+      current_user.followees << followee
+    end
+    redirect_to people_path
+  end
+
 end

@@ -23,5 +23,5 @@ Myflix::Application.routes.draw do
       put 'update', action: :update_queue
     end
   end
-  resources :followees, only: [:destroy]
+  resources :followees, only: [:destroy, :create]
 end

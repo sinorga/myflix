@@ -30,14 +30,41 @@ describe FolloweesController do
       expect(response).to redirect_to people_path
     end
 
-    it "delete the followee record if the current user is the follower" do
+    it "delete the followee relationship if the current user is the follower" do
       delete :destroy, id: alice.id
       expect(user.followees.count).to eq(0)
     end
 
-    it "does not delete the followee record if the current user is not the follower" do
+    it "does not delete the user record of followee" do
+      delete :destroy, id: alice.id
+      expect(User.find_by_id(alice.id)).to eq alice
+    end
+
+    it "does not delete the followee relationship if the current user is not the follower" do
       delete :destroy, id: bob.id
       expect(user.followees.count).to eq(1)
+    end
+  end
+
+  describe "POST create" do
+    let(:alice) { Fabricate(:user) }
+    it_behaves_like "require_login" do
+      let(:action) { post :create, followee_id: 3 }
+    end
+
+    it "redirects to followee's page" do
+      post :create, followee_id: alice.id
+      expect(response).to redirect_to people_path
+    end
+
+    it "creates followee for current user" do
+      post :create, followee_id: alice.id
+      expect(user.followees.first).to eq(alice)
+    end
+
+    it "does not create followee for current user if followee does not exist" do
+      post :create, followee_id: 7
+      expect(user.followees.count).to eq(0)
     end
   end
 end
