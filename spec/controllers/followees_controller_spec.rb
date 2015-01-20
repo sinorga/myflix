@@ -62,6 +62,17 @@ describe FolloweesController do
       expect(user.followees.first).to eq(alice)
     end
 
+    it "does not create followee for current user if user already follows the followee" do
+      user.followees << alice
+      post :create, followee_id: alice.id
+      expect(user.followees.count).to eq(1)
+    end
+
+    it "dese not allow one to follow themselves" do
+      post :create, followee_id: user.id
+      expect(user.followees.count).to eq(0)
+    end
+
     it "does not create followee for current user if followee does not exist" do
       post :create, followee_id: 7
       expect(user.followees.count).to eq(0)

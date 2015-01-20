@@ -29,4 +29,17 @@ describe User do
       expect(user.queued_video?(video)).to be_falsey
     end
   end
+
+  describe "#can_follow?" do
+    it "returns true if user can be followed" do
+      alice = Fabricate(:user)
+      bob = Fabricate(:user)
+      expect(alice.can_follow?(bob)).to be_truthy
+    end
+
+    it "returns false if user can't be followed" do
+      alice = Fabricate(:user)
+      expect(alice.can_follow?(alice)).to be_falsey
+    end
+  end
 end

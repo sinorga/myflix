@@ -22,4 +22,8 @@ class User < ActiveRecord::Base
   def queued_video?(video)
     queue_items.map(&:video).include?(video)
   end
+
+  def can_follow?(followee)
+    Followership.create(follower: self, followee: followee).valid?
+  end
 end
