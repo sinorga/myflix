@@ -12,9 +12,7 @@ class FolloweesController < ApplicationController
 
   def create
     followee = User.find_by(id: params[:followee_id])
-    if followee
-      Followership.create(follower: current_user, followee: followee)
-    end
+    current_user.follow(followee) if followee
     redirect_to people_path
   end
 

@@ -24,6 +24,11 @@ class User < ActiveRecord::Base
   end
 
   def can_follow?(followee)
-    Followership.create(follower: self, followee: followee).valid?
+    Followership.new(follower: self, followee: followee).valid?
   end
+
+  def follow(followee)
+    self.followees << followee if can_follow?(followee)
+  end
+
 end

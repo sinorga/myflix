@@ -30,6 +30,21 @@ describe User do
     end
   end
 
+  describe "#follow" do
+    it "follows user" do
+      alice = Fabricate(:user)
+      bob = Fabricate(:user)
+      alice.follow(bob)
+      expect(alice.followees.count).to eq(1)
+    end
+
+    it "does not follow user if user can't be followed" do
+      alice = Fabricate(:user)
+      alice.follow(alice)
+      expect(alice.followees.count).to eq(0)
+    end
+  end
+
   describe "#can_follow?" do
     it "returns true if user can be followed" do
       alice = Fabricate(:user)
