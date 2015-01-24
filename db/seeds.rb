@@ -14,6 +14,7 @@ categories = Category.create([
 
 users = Fabricate.times(3, :user)
 ooo_user = User.create(email: "ooo@gmail.com", password: "123456", full_name: "Mr. Ooo")
+ooo_user.followees << users 
 users << ooo_user
 
 videos = Fabricate.times(20, :video) do
