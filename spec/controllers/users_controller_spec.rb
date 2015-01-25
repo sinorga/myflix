@@ -9,6 +9,9 @@ describe UsersController do
   end
 
   describe "POST create" do
+    before do
+      ActionMailer::Base.deliveries.clear
+    end
     context "with valid input" do
       let(:user) { Fabricate.build(:user) }
       before do
@@ -26,6 +29,21 @@ describe UsersController do
         expect(response).to redirect_to sign_in_path
       end
 
+      context "sends welcome email" do
+        it "sends out the email" do
+          expect(ActionMailer::Base.deliveries).not_to be_empty
+        end
+
+        it "sends to the signed up user" do
+          message = ActionMailer::Base.deliveries.last
+          expect(message.to).to eq([user.email])
+        end
+
+        it "has the right content" do
+          message = ActionMailer::Base.deliveries.last
+          expect(message.body).to include(user.full_name)
+        end
+      end
     end
 
     context "with invalid input" do
@@ -43,6 +61,10 @@ describe UsersController do
 
       it "sets @user variable" do
         expect(assigns(:user)).to be_a_new(User)
+      end
+
+      it "does not sent out the email" do
+        expect(ActionMailer::Base.deliveries).to be_empty
       end
     end
   end
