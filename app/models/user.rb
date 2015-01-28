@@ -9,7 +9,8 @@ class User < ActiveRecord::Base
   has_many :followees, through: :followee_maps
 
 
-  validates_presence_of :email, :password, :full_name
+  validates_presence_of :email, :full_name
+  validates_presence_of :password
   validates_uniqueness_of :email
   has_secure_password validations: false
 
@@ -31,4 +32,13 @@ class User < ActiveRecord::Base
     self.followees << followee if can_follow?(followee)
   end
 
+  def generate_password_reset_token
+    self.password_reset_token = SecureRandom.urlsafe_base64
+    save(validate: false)
+  end
+
+  def clear_password_reset_token
+    self.password_reset_token = nil
+    save(validate: false)
+  end
 end
