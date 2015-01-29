@@ -40,10 +40,11 @@ class UsersController < ApplicationController
 
   def reset_password
     find_user_by_vaild_token!
-    if @user.update(password: params[:password])
+    if @user.update(password: params[:user][:password])
       @user.clear_password_reset_token
       redirect_to sign_in_path
     else
+      flash[:danger] = "Update password failed"
       render :new_reset_password
     end
   end
@@ -58,7 +59,7 @@ class UsersController < ApplicationController
   end
 
   def find_user_by_vaild_token!
-    @user = User.find_by(password_reset_token: params[:token])
-    raise ActionController::RoutingError.new('Not Found') if !params[:token] || !@user
+    @user = User.find_by(password_reset_token: params[:password_reset_token])
+    raise ActionController::RoutingError.new('Not Found') if !params[:password_reset_token] || !@user
   end
 end

@@ -102,7 +102,7 @@ describe UsersController do
     it_behaves_like "require_not_login" do
       let(:action) { post :confirm_password_reset }
     end
-    
+
     context "with valid email" do
       let(:alice) { Fabricate(:user) }
       before do
@@ -150,13 +150,13 @@ describe UsersController do
 
   describe "GET new_reset_password" do
     it_behaves_like "require_not_login" do
-      let(:action) { get :new_reset_password, token: "xxxxxxxxxxxx" }
+      let(:action) { get :new_reset_password, password_reset_token: "xxxxxxxxxxxx" }
     end
 
     it "sets @user variable if token is vaild" do
       alice = Fabricate(:user)
       alice.generate_password_reset_token
-      get :new_reset_password, token: alice.password_reset_token
+      get :new_reset_password, password_reset_token: alice.password_reset_token
       expect(assigns(:user)).to eq(alice)
     end
 
@@ -169,18 +169,18 @@ describe UsersController do
 
   describe "POST reset_password" do
     it_behaves_like "require_not_login" do
-      let(:action) { post :reset_password, token: "xxxxxxxxxxxx" }
+      let(:action) { post :reset_password, password_reset_token: "xxxxxxxxxxxx" }
     end
 
     it "raise not found error if token is invalid" do
       expect{
-        post :reset_password, token: "xxxxxxxxxxxx"
+        post :reset_password, password_reset_token: "xxxxxxxxxxxx"
       }.to raise_error(ActionController::RoutingError)
     end
 
     it "raise not found error if token is nil" do
       expect{
-        post :reset_password, token: nil
+        post :reset_password, password_reset_token: nil
       }.to raise_error(ActionController::RoutingError)
     end
 
@@ -188,7 +188,7 @@ describe UsersController do
       let(:alice) { Fabricate(:user, password: "oldpw") }
       before do
         alice.generate_password_reset_token
-        post :reset_password, token: alice.password_reset_token, password: "newpassword"
+        post :reset_password, password_reset_token: alice.password_reset_token, user: { password: "newpassword"}
         alice.reload
       end
 
@@ -209,12 +209,16 @@ describe UsersController do
       let(:alice) { Fabricate(:user, password: "oldpw") }
       before do
         alice.generate_password_reset_token
-        post :reset_password, token: alice.password_reset_token, password: nil
+        post :reset_password, password_reset_token: alice.password_reset_token, user: { password: nil}
         alice.reload
       end
 
       it "renders the new_reset_password page" do
         expect(response).to render_template :new_reset_password
+      end
+
+      it "flashes error message" do
+        expect(flash[:danger]).not_to be_empty
       end
 
       it "does not update password of the user" do
