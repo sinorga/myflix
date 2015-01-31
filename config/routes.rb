@@ -6,9 +6,7 @@ Myflix::Application.routes.draw do
   get 'register', to: 'users#new'
   get 'forgot_password', to: 'forgot_password#new'
   post 'confirm_password_reset', to: 'forgot_password#confirm'
-  get 'reset_password/:password_reset_token', to: 'users#edit_password', as: :edit_password
-  get 'invalid_token', to: 'users#invalid_token'
-  post 'reset_password/:password_reset_token', to: 'users#reset_password', as: :reset_password
+  get 'invalid_token', to: 'reset_password#invalid_token'
   get 'sign_in', to: 'sessions#new'
   get 'sign_out', to: 'sessions#destroy'
   get 'my_queue', to: 'queue_items#index'
@@ -29,4 +27,5 @@ Myflix::Application.routes.draw do
     end
   end
   resources :followees, only: [:destroy, :create]
+  resources :reset_password, only: [:edit, :update]
 end

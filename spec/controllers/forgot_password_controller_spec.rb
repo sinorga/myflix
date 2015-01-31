@@ -29,7 +29,7 @@ describe ForgotPasswordController do
 
       it "sends out email with reset password link" do
         message = ActionMailer::Base.deliveries.last
-        expect(message.body).to include(edit_password_path(alice.password_reset_token))
+        expect(message.body).to include(edit_reset_password_path(alice.password_reset_token))
       end
     end
 
