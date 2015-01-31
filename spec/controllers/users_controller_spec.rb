@@ -92,78 +92,21 @@ describe UsersController do
     end
   end
 
-  describe "GET forgot_password" do
+  describe "GET edit_password" do
     it_behaves_like "require_not_login" do
-      let(:action) { get :forgot_password }
-    end
-  end
-
-  describe "POST confirm_password_reset" do
-    it_behaves_like "require_not_login" do
-      let(:action) { post :confirm_password_reset }
-    end
-
-    context "with valid email" do
-      let(:alice) { Fabricate(:user) }
-      before do
-        post :confirm_password_reset, email: alice.email
-        alice.reload
-      end
-
-      it "renders to confirm password reset page" do
-        expect(response).to render_template :confirm_password_reset
-      end
-
-      it "generates and save the random token for reset password" do
-        expect(alice.password_reset_token).not_to be_nil
-      end
-
-      it "sends out the email" do
-        expect(ActionMailer::Base.deliveries).not_to be_empty
-      end
-
-      it "sends out email with reset password link" do
-        message = ActionMailer::Base.deliveries.last
-        expect(message.body).to include(new_reset_password_path(alice.password_reset_token))
-      end
-    end
-
-    context "with invalid email" do
-      before do
-        ActionMailer::Base.deliveries.clear
-        post :confirm_password_reset, email: "nobody@xxx.com"
-      end
-
-      it "renders forgot_password page" do
-        expect(response).to render_template :forgot_password
-      end
-
-      it "flashes error message" do
-        expect(flash[:danger]).to be_present
-      end
-
-      it "does not send out email" do
-        expect(ActionMailer::Base.deliveries).to be_empty
-      end
-    end
-  end
-
-  describe "GET new_reset_password" do
-    it_behaves_like "require_not_login" do
-      let(:action) { get :new_reset_password, password_reset_token: "xxxxxxxxxxxx" }
+      let(:action) { get :edit_password, password_reset_token: "xxxxxxxxxxxx" }
     end
 
     it "sets @user variable if token is vaild" do
       alice = Fabricate(:user)
       alice.generate_password_reset_token
-      get :new_reset_password, password_reset_token: alice.password_reset_token
+      get :edit_password, password_reset_token: alice.password_reset_token
       expect(assigns(:user)).to eq(alice)
     end
 
-    it "raise not found error if token is invalid" do
-      expect{
-        get :new_reset_password, token: "xxxxxxxxxxxx"
-      }.to raise_error(ActionController::RoutingError)
+    it "redirects to invalid token page if token is invalid" do
+      get :edit_password, password_reset_token: "xxxxxxxxxxxx"
+      expect(response).to redirect_to invalid_token_path
     end
   end
 
@@ -172,16 +115,9 @@ describe UsersController do
       let(:action) { post :reset_password, password_reset_token: "xxxxxxxxxxxx" }
     end
 
-    it "raise not found error if token is invalid" do
-      expect{
-        post :reset_password, password_reset_token: "xxxxxxxxxxxx"
-      }.to raise_error(ActionController::RoutingError)
-    end
-
-    it "raise not found error if token is nil" do
-      expect{
-        post :reset_password, password_reset_token: nil
-      }.to raise_error(ActionController::RoutingError)
+    it "redirects to invalid token page if token is invalid" do
+      post :reset_password, password_reset_token: "xxxxxxxxxxxx"
+      expect(response).to redirect_to invalid_token_path
     end
 
     context "with vaild password" do
@@ -203,6 +139,10 @@ describe UsersController do
       it "clears the password_reset_token of the user" do
         expect(alice.password_reset_token).to be_nil
       end
+
+      it "flashes success message" do
+        expect(flash[:success]).not_to be_empty
+      end
     end
 
     context "with invalid password" do
@@ -213,8 +153,8 @@ describe UsersController do
         alice.reload
       end
 
-      it "renders the new_reset_password page" do
-        expect(response).to render_template :new_reset_password
+      it "renders the edit_password page" do
+        expect(response).to render_template :edit_password
       end
 
       it "flashes error message" do

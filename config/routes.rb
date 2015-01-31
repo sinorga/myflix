@@ -4,9 +4,10 @@ Myflix::Application.routes.draw do
   get 'ui(/:action)', controller: 'ui'
   get '/home', to: 'categories#index'
   get 'register', to: 'users#new'
-  get 'forgot_password', to: 'users#forgot_password'
-  post 'confirm_password_reset', to: 'users#confirm_password_reset'
-  get 'reset_password/:password_reset_token', to: 'users#new_reset_password', as: :new_reset_password
+  get 'forgot_password', to: 'forgot_password#new'
+  post 'confirm_password_reset', to: 'forgot_password#confirm'
+  get 'reset_password/:password_reset_token', to: 'users#edit_password', as: :edit_password
+  get 'invalid_token', to: 'users#invalid_token'
   post 'reset_password/:password_reset_token', to: 'users#reset_password', as: :reset_password
   get 'sign_in', to: 'sessions#new'
   get 'sign_out', to: 'sessions#destroy'

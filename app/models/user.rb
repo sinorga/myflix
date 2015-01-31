@@ -33,12 +33,10 @@ class User < ActiveRecord::Base
   end
 
   def generate_password_reset_token
-    self.password_reset_token = SecureRandom.urlsafe_base64
-    save(validate: false)
+    update_column(:password_reset_token, SecureRandom.urlsafe_base64)
   end
 
   def clear_password_reset_token
-    self.password_reset_token = nil
-    save(validate: false)
+    update_column(:password_reset_token, nil)
   end
 end
