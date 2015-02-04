@@ -2,9 +2,20 @@ require 'spec_helper'
 
 describe UsersController do
   describe "GET new" do
+    it_behaves_like "require_not_login" do
+      let(:action) { get :new }
+    end
+
     it "sets @user variable" do
       get :new
       expect(assigns(:user)).to be_a_new(User)
+    end
+
+    it "redirects to invalid invite token page if token is invialid" do
+      alice = Fabricate(:user)
+      bob = Fabricate(:invite_user, inviter: alice)
+      get :new, invite_token: "XXXXXXXX"
+      expect(response).to redirect_to invalid_invite_token_path
     end
   end
 
@@ -12,6 +23,11 @@ describe UsersController do
     before do
       ActionMailer::Base.deliveries.clear
     end
+
+    it_behaves_like "require_not_login" do
+      let(:action) { post :create }
+    end
+
     context "with valid input" do
       let(:user) { Fabricate.build(:user) }
       before do
@@ -43,6 +59,31 @@ describe UsersController do
           message = ActionMailer::Base.deliveries.last
           expect(message.body).to include(user.full_name)
         end
+      end
+    end
+
+    context "with valid input and inviter" do
+      let(:alice) { Fabricate(:user) }
+      let(:invite_bob) { Fabricate(:invite_user, inviter: alice) }
+      let(:bob) { User.last }
+      before do
+        post :create, invite_token: invite_bob.token, user: {
+          email: invite_bob.email,
+          password: "zbAdd",
+          full_name: "Mr. bob"
+          }
+      end
+
+      it "sets user follow the inviter" do
+        expect(bob.followees.first).to eq(alice)
+      end
+
+      it "sets inviter follow the user" do
+        expect(alice.followees.first).to eq(bob)
+      end
+
+      it "deletes invite_user record" do
+        expect(InviteUser.count).to eq(0)
       end
     end
 
