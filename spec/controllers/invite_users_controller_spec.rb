@@ -18,7 +18,7 @@ describe InviteUsersController do
       set_user
       ActionMailer::Base.deliveries.clear
     end
-    
+
     it_behaves_like 'require_login' do
       let(:action) { post :create }
     end
@@ -37,6 +37,10 @@ describe InviteUsersController do
 
       it "associates signed in user with invited user" do
         expect(user.reload.invite_users.last.name).to eq(bob.name)
+      end
+
+      it "flashes success message" do
+        expect(flash[:success]).not_to be_blank
       end
 
       context "send invite email" do

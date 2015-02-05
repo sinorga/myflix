@@ -9,6 +9,7 @@ class InviteUsersController < ApplicationController
     @invite_user = current_user.invite_users.build(invite_user_params)
     if @invite_user.save
       UserMailer.send_invitation(@invite_user).deliver
+      flash[:success] = "You invited user #{@invite_user.name}"
       redirect_to home_path
     else
       flash.now[:danger] = "Invalid input"

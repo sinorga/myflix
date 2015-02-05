@@ -5,9 +5,9 @@ class CreateInviteUsers < ActiveRecord::Migration
       t.string :email
       t.text :message
       t.string :token
-      t.integer :user_id
+      t.integer :inviter_id
       t.timestamps
     end
-    add_index :invite_users, :user_id
+    add_index :invite_users, :inviter_id
   end
 end
