@@ -11,11 +11,17 @@ describe UsersController do
       expect(assigns(:user)).to be_a_new(User)
     end
 
+    it "sets @invite_token variable if token is valid" do
+      invite_bob = Fabricate(:invite_user)
+      get :new, invite_token: invite_bob.token
+      expect(assigns(:invite_token)).to eq(invite_bob.token)
+    end
+
     it "redirects to invalid invite token page if token is invialid" do
       alice = Fabricate(:user)
       bob = Fabricate(:invite_user, inviter: alice)
       get :new, invite_token: "XXXXXXXX"
-      expect(response).to redirect_to invalid_invite_token_path
+      expect(response).to redirect_to invalid_token_path
     end
   end
 

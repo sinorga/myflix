@@ -1,13 +1,12 @@
 class UsersController < ApplicationController
   before_action :require_user, only: [:show]
   before_action :not_signed_in, only: [:new, :create]
-  before_action :set_invite_datas, only: [:new, :create]
+  before_action :set_invitation_datas, only: [:new, :create]
 
   def new
-    @user = User.new
-    if params[:invite_token] && !@inviter
-      redirect_to invalid_invite_token_path
-    end
+    @user = User.new(email: @invite_user.try(:email))
+    @invite_token = @invite_user.try(:token)
+    redirect_to invalid_token_path if is_token_invalid?
   end
 
   def create
@@ -33,7 +32,11 @@ class UsersController < ApplicationController
     params.require(:user).permit(:email, :password, :full_name)
   end
 
-  def set_invite_datas
+  def is_token_invalid?
+    params[:invite_token].present? && !@inviter
+  end
+
+  def set_invitation_datas
     @invite_user = InviteUser.find_by(token: params[:invite_token])
     @inviter = @invite_user.try(:inviter)
   end

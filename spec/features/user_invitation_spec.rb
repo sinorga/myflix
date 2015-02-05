@@ -7,7 +7,7 @@ feature "User invites friend" do
     bob = Fabricate.build(:user, email: invite_bob.email)
     sign_in(alice)
 
-    visit invite_path
+    click_on "Invite a friend"
     fill_in("Friend's Name", with: invite_bob.name)
     fill_in("Friend's Email Address", with: invite_bob.email)
     fill_in("Invitation Message", with: invite_bob.message)
