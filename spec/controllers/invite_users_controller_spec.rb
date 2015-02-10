@@ -62,8 +62,7 @@ describe InviteUsersController do
     end
 
     context "with invalid input" do
-      let(:bob) { Fabricate.build(:invalid_invite_user) }
-      before { post :create, invite_user: {name: bob.name, email: bob.email, message: bob.message} }
+      before { post :create, invite_user: Fabricate.attributes_for(:invalid_invite_user) }
 
       it "renders to new page" do
         expect(response).to render_template :new

@@ -71,7 +71,6 @@ describe UsersController do
     context "with valid input and inviter" do
       let(:alice) { Fabricate(:user) }
       let(:invite_bob) { Fabricate(:invite_user, inviter: alice) }
-      let(:bob) { User.last }
       before do
         post :create, invite_token: invite_bob.token, user: {
           email: invite_bob.email,
@@ -81,10 +80,12 @@ describe UsersController do
       end
 
       it "sets user follow the inviter" do
+        bob = User.last
         expect(bob.followees.first).to eq(alice)
       end
 
       it "sets inviter follow the user" do
+        bob = User.last
         expect(alice.followees.first).to eq(bob)
       end
 

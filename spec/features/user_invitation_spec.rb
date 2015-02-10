@@ -37,7 +37,7 @@ feature "User invites friend" do
     fill_in("Password", with: friend.password)
     fill_in("Full Name", with: friend.full_name)
     click_on "Sign Up"
-    expect(current_path).to eq("/sign_in")
+    expect(current_path).to eq(sign_in_path)
   end
 
   def expect_have_prefilled_email(friend)
