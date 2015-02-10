@@ -13,6 +13,9 @@ gem 'jquery-rails'
 gem 'pg'
 gem 'sidekiq'
 gem 'unicorn'
+gem "sentry-raven", :git => "https://github.com/getsentry/raven-ruby.git"
+gem 'paratrooper'
+
 
 group :development do
   gem 'thin'
@@ -20,7 +23,6 @@ group :development do
   gem "binding_of_caller"
   gem "letter_opener"
   gem "foreman"
-  gem 'paratrooper'
 end
 
 group :development, :test do
@@ -41,5 +43,4 @@ end
 
 group :production do
   gem 'rails_12factor'
-  gem "sentry-raven", :git => "https://github.com/getsentry/raven-ruby.git"
 end
