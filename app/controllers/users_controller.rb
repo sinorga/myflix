@@ -4,8 +4,8 @@ class UsersController < ApplicationController
   before_action :set_invitation_datas, only: [:new, :create]
 
   def new
-    @user = User.new(email: @invite_user.try(:email))
-    @invite_token = @invite_user.try(:token)
+    @user = User.new(email: @invitation.try(:email))
+    @invite_token = @invitation.try(:token)
     redirect_to invalid_token_path if is_token_invalid?
   end
 
@@ -38,8 +38,8 @@ class UsersController < ApplicationController
 
   def set_invitation_datas
     if params[:invite_token].present?
-      @invite_user = InviteUser.find_by(token: params[:invite_token])
-      @inviter = @invite_user.try(:inviter)
+      @invitation = Invitation.find_by(token: params[:invite_token])
+      @inviter = @invitation.try(:inviter)
     end
   end
 
@@ -47,7 +47,7 @@ class UsersController < ApplicationController
     if @inviter
       @user.follow(@inviter)
       @inviter.follow(@user)
-      @invite_user.expire
+      @invitation.expire
     end
   end
 end

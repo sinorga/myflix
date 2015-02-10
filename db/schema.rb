@@ -32,7 +32,7 @@ ActiveRecord::Schema.define(version: 20150201141356) do
   add_index "followerships", ["followee_id"], name: "index_followerships_on_followee_id", using: :btree
   add_index "followerships", ["follower_id"], name: "index_followerships_on_follower_id", using: :btree
 
-  create_table "invite_users", force: true do |t|
+  create_table "invitations", force: true do |t|
     t.string   "name"
     t.string   "email"
     t.text     "message"
@@ -42,7 +42,7 @@ ActiveRecord::Schema.define(version: 20150201141356) do
     t.datetime "updated_at"
   end
 
-  add_index "invite_users", ["inviter_id"], name: "index_invite_users_on_inviter_id", using: :btree
+  add_index "invitations", ["inviter_id"], name: "index_invitations_on_inviter_id", using: :btree
 
   create_table "queue_items", force: true do |t|
     t.integer  "position"

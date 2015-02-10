@@ -11,7 +11,7 @@ Myflix::Application.routes.draw do
   get 'sign_out', to: 'sessions#destroy'
   get 'my_queue', to: 'queue_items#index'
   get 'people', to: 'followees#index'
-  get 'invite', to: 'invite_users#new'
+  get 'invite', to: 'invitations#new'
   resources :videos, only: [:show] do
     collection do
       get 'search'
@@ -29,5 +29,5 @@ Myflix::Application.routes.draw do
   end
   resources :followees, only: [:destroy, :create]
   resources :reset_password, only: [:edit, :update]
-  resources :invite_users, only: [:create]
+  resources :invitations, only: [:create]
 end

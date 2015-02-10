@@ -3,7 +3,7 @@ require "spec_helper"
 feature "User invites friend" do
   scenario "user invite his friend successfully" do
     alice = Fabricate(:user)
-    invite_bob = Fabricate.build(:invite_user)
+    invite_bob = Fabricate.build(:invitation)
     bob = Fabricate.build(:user, email: invite_bob.email)
     sign_in(alice)
 
@@ -32,7 +32,7 @@ feature "User invites friend" do
   end
 
   def friend_sign_up(friend)
-    expect_have_hidden_field('invite_token', InviteUser.last.token)
+    expect_have_hidden_field('invite_token', Invitation.last.token)
     expect_have_prefilled_email(friend)
     fill_in("Password", with: friend.password)
     fill_in("Full Name", with: friend.full_name)

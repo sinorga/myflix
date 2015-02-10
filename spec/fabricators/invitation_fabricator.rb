@@ -1,10 +1,10 @@
 
-Fabricator(:invite_user) do
+Fabricator(:invitation) do
   name { Faker::Name.name }
   email { Faker::Internet.free_email }
   message { Faker::Lorem.sentence }
 end
 
-Fabricator(:invalid_invite_user, from: :invite_user) do
+Fabricator(:invalid_invitation, from: :invitation) do
   name nil
 end

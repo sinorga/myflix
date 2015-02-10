@@ -1,6 +1,6 @@
-class CreateInviteUsers < ActiveRecord::Migration
+class CreateInvitations < ActiveRecord::Migration
   def change
-    create_table :invite_users do |t|
+    create_table :invitations do |t|
       t.string :name
       t.string :email
       t.text :message
@@ -8,6 +8,6 @@ class CreateInviteUsers < ActiveRecord::Migration
       t.integer :inviter_id
       t.timestamps
     end
-    add_index :invite_users, :inviter_id
+    add_index :invitations, :inviter_id
   end
 end

@@ -1,15 +1,15 @@
 require 'spec_helper'
 
-describe InviteUsersController do
+describe InvitationsController do
   describe "GET new" do
     before { set_user }
     it_behaves_like 'require_login' do
       let(:action) { get :new }
     end
 
-    it "sets @invite_user variable" do
+    it "sets @invitation variable" do
       get :new
-      expect(assigns(:invite_user)).to be_a_new(InviteUser)
+      expect(assigns(:invitation)).to be_a_new(Invitation)
     end
   end
 
@@ -24,19 +24,19 @@ describe InviteUsersController do
     end
 
     context "with valid input" do
-      let(:bob) { Fabricate.build(:invite_user) }
-      before { post :create, invite_user: {name: bob.name, email: bob.email, message: bob.message} }
+      let(:bob) { Fabricate.build(:invitation) }
+      before { post :create, invitation: {name: bob.name, email: bob.email, message: bob.message} }
 
       it "redirects to home page" do
         expect(response).to redirect_to home_path
       end
 
       it "saves invite user record" do
-        expect(InviteUser.first).not_to be_nil
+        expect(Invitation.first).not_to be_nil
       end
 
       it "associates signed in user with invited user" do
-        expect(user.reload.invite_users.last.name).to eq(bob.name)
+        expect(user.reload.invitations.last.name).to eq(bob.name)
       end
 
       it "flashes success message" do
@@ -56,20 +56,20 @@ describe InviteUsersController do
           message = ActionMailer::Base.deliveries.last
           expect(message.body).to include(bob.name)
           expect(message.body).to include(bob.message)
-          expect(message.body).to include(register_path(invite_token: user.invite_users.last.token))
+          expect(message.body).to include(register_path(invite_token: user.invitations.last.token))
         end
       end
     end
 
     context "with invalid input" do
-      before { post :create, invite_user: Fabricate.attributes_for(:invalid_invite_user) }
+      before { post :create, invitation: Fabricate.attributes_for(:invalid_invitation) }
 
       it "renders to new page" do
         expect(response).to render_template :new
       end
 
-      it "assigns @invite_user variale" do
-        expect(assigns(:invite_user)).to be_kind_of(InviteUser)
+      it "assigns @invitation variale" do
+        expect(assigns(:invitation)).to be_kind_of(Invitation)
       end
 
       it "flashes error message" do
@@ -77,7 +77,7 @@ describe InviteUsersController do
       end
 
       it "does not save invite user" do
-        expect(InviteUser.count).to eq(0)
+        expect(Invitation.count).to eq(0)
       end
 
       it "does not send out email" do

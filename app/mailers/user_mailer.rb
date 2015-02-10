@@ -10,8 +10,8 @@ class UserMailer < ActionMailer::Base
     mail to: user.email, subject: "mylifx reset password"
   end
 
-  def send_invitation(invite_user)
-    @invite_user = invite_user
-    mail to: invite_user.email, subject: "mylifx, #{invite_user.inviter.full_name} invite you!"
+  def send_invitation(invitation)
+    @invitation = invitation
+    mail to: invitation.email, subject: "mylifx, #{invitation.inviter.full_name} invite you!"
   end
 end

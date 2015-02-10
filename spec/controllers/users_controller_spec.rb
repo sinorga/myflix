@@ -12,14 +12,14 @@ describe UsersController do
     end
 
     it "sets @invite_token variable if token is valid" do
-      invite_bob = Fabricate(:invite_user)
+      invite_bob = Fabricate(:invitation)
       get :new, invite_token: invite_bob.token
       expect(assigns(:invite_token)).to eq(invite_bob.token)
     end
 
     it "redirects to invalid invite token page if token is invialid" do
       alice = Fabricate(:user)
-      bob = Fabricate(:invite_user, inviter: alice)
+      bob = Fabricate(:invitation, inviter: alice)
       get :new, invite_token: "XXXXXXXX"
       expect(response).to redirect_to invalid_token_path
     end
@@ -70,7 +70,7 @@ describe UsersController do
 
     context "with valid input and inviter" do
       let(:alice) { Fabricate(:user) }
-      let(:invite_bob) { Fabricate(:invite_user, inviter: alice) }
+      let(:invite_bob) { Fabricate(:invitation, inviter: alice) }
       before do
         post :create, invite_token: invite_bob.token, user: {
           email: invite_bob.email,
@@ -89,8 +89,8 @@ describe UsersController do
         expect(alice.followees.first).to eq(bob)
       end
 
-      it "expires invite_user record" do
-        expect(InviteUser.last.token).to be_nil
+      it "expires invitation record" do
+        expect(Invitation.last.token).to be_nil
       end
     end
 

@@ -1,7 +1,7 @@
 class User < ActiveRecord::Base
   has_many :reviews
   has_many :queue_items
-  has_many :invite_users, foreign_key: 'inviter_id'
+  has_many :invitations, foreign_key: 'inviter_id'
 
   has_many :follower_maps, foreign_key: 'followee_id', class_name: 'Followership', dependent: :destroy
   has_many :followers, through: :follower_maps
