@@ -21,6 +21,7 @@ group :development do
   gem "binding_of_caller"
   gem "letter_opener"
   gem "foreman"
+  gem 'paratrooper'
 end
 
 group :development, :test do
