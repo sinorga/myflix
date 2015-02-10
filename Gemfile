@@ -13,7 +13,6 @@ gem 'jquery-rails'
 gem 'pg'
 gem 'sidekiq'
 gem 'unicorn'
-gem "sentry-raven", :git => "https://github.com/getsentry/raven-ruby.git"
 
 group :development do
   gem 'thin'
@@ -42,4 +41,5 @@ end
 
 group :production do
   gem 'rails_12factor'
+  gem "sentry-raven", :git => "https://github.com/getsentry/raven-ruby.git"
 end
