@@ -12,12 +12,14 @@ gem 'uglifier'
 gem 'jquery-rails'
 gem 'pg'
 gem 'sidekiq'
+gem 'unicorn'
 
 group :development do
   gem 'thin'
   gem "better_errors"
   gem "binding_of_caller"
   gem "letter_opener"
+  gem "foreman"
 end
 
 group :development, :test do
