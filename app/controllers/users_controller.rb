@@ -13,7 +13,7 @@ class UsersController < ApplicationController
     @user = User.new(user_params)
 
     if @user.save
-      UserMailer.welcome(@user).deliver
+      UserMailer.delay.welcome(@user)
       build_relationship_with_inviter
       redirect_to sign_in_path
     else

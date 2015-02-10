@@ -20,5 +20,8 @@ Myflix::Application.configure do
   config.eager_load = false
 
   config.action_mailer.delivery_method = :letter_opener
-  config.action_mailer.default_url_options = { :host => "127.0.0.1:3000" }
+  config.action_mailer.default_url_options = { :host => "127.0.0.1:5000" }
+
+  config.logger = Logger.new(STDOUT)
+  config.logger.level = Logger.const_get(ENV['LOG_LEVEL'] ? ENV['LOG_LEVEL'].upcase : 'DEBUG')
 end

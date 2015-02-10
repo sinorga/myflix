@@ -5,7 +5,7 @@ class ForgotPasswordController < ApplicationController
     user = User.find_by(email: params[:email])
     if user
       user.generate_password_reset_token
-      UserMailer.password_reset_notify(user).deliver
+      UserMailer.delay.password_reset_notify(user)
     else
       flash.now[:danger] = "Input email does not exist"
       render :new
