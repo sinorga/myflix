@@ -89,8 +89,8 @@ describe UsersController do
         expect(alice.followees.first).to eq(bob)
       end
 
-      it "deletes invite_user record" do
-        expect(InviteUser.count).to eq(0)
+      it "expires invite_user record" do
+        expect(InviteUser.last.token).to be_nil
       end
     end
 

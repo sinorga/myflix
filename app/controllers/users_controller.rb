@@ -37,15 +37,17 @@ class UsersController < ApplicationController
   end
 
   def set_invitation_datas
-    @invite_user = InviteUser.find_by(token: params[:invite_token])
-    @inviter = @invite_user.try(:inviter)
+    if params[:invite_token].present?
+      @invite_user = InviteUser.find_by(token: params[:invite_token])
+      @inviter = @invite_user.try(:inviter)
+    end
   end
 
   def build_relationship_with_inviter
     if @inviter
       @user.follow(@inviter)
       @inviter.follow(@user)
-      @invite_user.destroy
+      @invite_user.expire
     end
   end
 end
