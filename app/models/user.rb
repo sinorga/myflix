@@ -1,13 +1,13 @@
 class User < ActiveRecord::Base
   has_many :reviews
   has_many :queue_items
+  has_many :invitations, foreign_key: 'inviter_id'
 
   has_many :follower_maps, foreign_key: 'followee_id', class_name: 'Followership', dependent: :destroy
   has_many :followers, through: :follower_maps
 
   has_many :followee_maps, foreign_key: 'follower_id', class_name: 'Followership', dependent: :destroy
   has_many :followees, through: :followee_maps
-
 
   validates_presence_of :email, :full_name
   validates_presence_of :password
@@ -38,5 +38,9 @@ class User < ActiveRecord::Base
 
   def clear_password_reset_token
     update_column(:password_reset_token, nil)
+  end
+
+  def generate_invite_token
+    update_column(:invite_token, SecureRandom.urlsafe_base64)
   end
 end

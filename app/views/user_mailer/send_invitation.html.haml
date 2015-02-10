@@ -1,0 +1,8 @@
+!!! 5
+%html
+  %body
+    %p= "Hi #{@invitation.name},"
+    %p= "#{@invitation.inviter.full_name} has invitation message for you."
+    %p= @invitation.message
+    %p Click the following link to register.
+    %p= link_to "Register", register_url(invite_token: @invitation.token)

@@ -13,3 +13,9 @@ shared_examples "require_not_login" do
     expect(response).to redirect_to home_path
   end
 end
+
+shared_examples "tokenable" do
+  it "generates token before create" do
+    expect(object.token).not_to be_nil
+  end
+end

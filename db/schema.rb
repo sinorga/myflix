@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150126145851) do
+ActiveRecord::Schema.define(version: 20150201141356) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -31,6 +31,18 @@ ActiveRecord::Schema.define(version: 20150126145851) do
 
   add_index "followerships", ["followee_id"], name: "index_followerships_on_followee_id", using: :btree
   add_index "followerships", ["follower_id"], name: "index_followerships_on_follower_id", using: :btree
+
+  create_table "invitations", force: true do |t|
+    t.string   "name"
+    t.string   "email"
+    t.text     "message"
+    t.string   "token"
+    t.integer  "inviter_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "invitations", ["inviter_id"], name: "index_invitations_on_inviter_id", using: :btree
 
   create_table "queue_items", force: true do |t|
     t.integer  "position"

@@ -1,8 +1,12 @@
 class UsersController < ApplicationController
   before_action :require_user, only: [:show]
+  before_action :not_signed_in, only: [:new, :create]
+  before_action :set_invitation_datas, only: [:new, :create]
 
   def new
-    @user = User.new
+    @user = User.new(email: @invitation.try(:email))
+    @invite_token = @invitation.try(:token)
+    redirect_to invalid_token_path if is_token_invalid?
   end
 
   def create
@@ -10,6 +14,7 @@ class UsersController < ApplicationController
 
     if @user.save
       UserMailer.welcome(@user).deliver
+      build_relationship_with_inviter
       redirect_to sign_in_path
     else
       render :new
@@ -25,5 +30,24 @@ class UsersController < ApplicationController
   protected
   def user_params
     params.require(:user).permit(:email, :password, :full_name)
+  end
+
+  def is_token_invalid?
+    params[:invite_token].present? && !@inviter
+  end
+
+  def set_invitation_datas
+    if params[:invite_token].present?
+      @invitation = Invitation.find_by(token: params[:invite_token])
+      @inviter = @invitation.try(:inviter)
+    end
+  end
+
+  def build_relationship_with_inviter
+    if @inviter
+      @user.follow(@inviter)
+      @inviter.follow(@user)
+      @invitation.expire
+    end
   end
 end
