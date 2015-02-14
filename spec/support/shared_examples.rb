@@ -6,6 +6,20 @@ shared_examples "require_login" do
   end
 end
 
+shared_examples "require_admin" do
+  before { set_user }
+  it_behaves_like "require_login"
+  it "redirects to home path for normal user" do
+    action
+    expect(response).to redirect_to home_path
+  end
+
+  it "flashes danger message" do
+    action
+    expect(flash[:danger]).not_to be_blank
+  end
+end
+
 shared_examples "require_not_login" do
   it "redirects to home path for authenticated user" do
     set_user
