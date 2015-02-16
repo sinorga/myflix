@@ -17,5 +17,5 @@
 # Ignore sensitive config file
 config/database.yml
 
-# Ignore local env
-config/local_env.yml
+# Ignore development uploaded files
+public/uploads

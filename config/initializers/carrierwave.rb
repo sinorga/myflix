@@ -1,9 +1,4 @@
-if Rails.env.test? or Rails.env.cucumber?
-  CarrierWave.configure do |config|
-    config.storage = :file
-    config.enable_processing = false
-  end
-else
+if Rails.env.production? or Rails.env.staging?
   CarrierWave.configure do |config|
     config.storage = :fog
 
@@ -14,5 +9,10 @@ else
       :region                 => 'ap-northeast-1',
     }
     config.fog_directory  = ENV['S3_BUCKET']
+  end
+else
+  CarrierWave.configure do |config|
+    config.storage = :file
+    config.enable_processing = Rails.env.development?
   end
 end

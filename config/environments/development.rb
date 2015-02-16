@@ -24,11 +24,4 @@ Myflix::Application.configure do
 
   config.logger = Logger.new(STDOUT)
   config.logger.level = Logger.const_get(ENV['LOG_LEVEL'] ? ENV['LOG_LEVEL'].upcase : 'DEBUG')
-
-  config.before_configuration do
-    env_file = File.join(Rails.root, 'config', 'local_env.yml')
-    YAML.load(File.open(env_file)).each do |key, value|
-      ENV[key.to_s] = value
-    end if File.exists?(env_file)
-  end
 end

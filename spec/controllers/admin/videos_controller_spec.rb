@@ -13,12 +13,13 @@ describe Admin::VideosController do
   describe "POST create" do
     context "with vaild input" do
       before { post :create, video: Fabricate.attributes_for(:video) }
-      it "redirects to video page which just added" do
-        expect(response).to redirect_to video_path(Video.last)
+      it "redirects to new video page" do
+        expect(response).to redirect_to new_admin_video_path
       end
 
       it "saves video record" do
-        expect(Video.count).to eq(1)
+        category = Category.last
+        expect(category.videos.count).to eq(1)
       end
 
       it "flashes success message" do
@@ -37,7 +38,8 @@ describe Admin::VideosController do
       end
 
       it "does not save video record" do
-        expect(Video.count).to eq(0)
+        category = Category.last
+        expect(category.videos.count).to eq(0)
       end
 
       it "flashes danger message" do
