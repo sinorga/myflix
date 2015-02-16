@@ -5,6 +5,8 @@ describe Video do
   it { should have_many(:reviews).order('created_at desc') }
   it { should validate_presence_of(:title) }
   it { should validate_presence_of(:description) }
+  it { should validate_presence_of(:large_cover) }
+  it { should validate_presence_of(:small_cover) }
 
   describe ".search_by_title" do
     let!(:run_away) { Fabricate(:video, title: "Run Away", created_at: 1.day.ago) }

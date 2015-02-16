@@ -9,4 +9,40 @@ describe Admin::VideosController do
       expect(assigns(:video)).to be_a_new(Video)
     end
   end
+
+  describe "POST create" do
+    context "with vaild input" do
+      before { post :create, video: Fabricate.attributes_for(:video) }
+      it "redirects to video page which just added" do
+        expect(response).to redirect_to video_path(Video.last)
+      end
+
+      it "saves video record" do
+        expect(Video.count).to eq(1)
+      end
+
+      it "flashes success message" do
+        expect(flash[:success]).not_to be_blank
+      end
+    end
+
+    context "with invalid input" do
+      before { post :create, video: Fabricate.attributes_for(:invalid_video) }
+      it "renders to new page" do
+        expect(response).to render_template(:new)
+      end
+
+      it "sets @video variable" do
+        expect(assigns(:video)).to be_kind_of(Video)
+      end
+
+      it "does not save video record" do
+        expect(Video.count).to eq(0)
+      end
+
+      it "flashes danger message" do
+        expect(flash[:danger]).not_to be_blank
+      end
+    end
+  end
 end
