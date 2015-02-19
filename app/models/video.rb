@@ -3,7 +3,7 @@ class Video < ActiveRecord::Base
   has_many :reviews, -> { order('created_at desc') }
   mount_uploader :large_cover, VideoLargeCoverUploader
   mount_uploader :small_cover, VideoSmallCoverUploader
-  validates_presence_of :title, :description, :large_cover, :small_cover
+  validates_presence_of :title, :description, :large_cover, :small_cover, :stream_url
 
   def self.search_by_title(title)
     return [] if title.blank?
