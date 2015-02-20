@@ -10,13 +10,13 @@ class UsersController < ApplicationController
   end
 
   def create
-    @user = User.new(user_params)
-
-    if @user.save
-      UserMailer.delay.welcome(@user)
-      build_relationship_with_inviter
-      redirect_to sign_in_path
-    else
+    begin
+      create_paid_user
+    rescue Stripe::CardError => e
+      flash[:danger] = e.message
+      render :new
+    rescue
+      flash.delete(:danger)
       render :new
     end
   end
@@ -49,5 +49,28 @@ class UsersController < ApplicationController
       @inviter.follow(@user)
       @invitation.expire
     end
+  end
+
+  def create_paid_user
+    User.transaction do
+      @user = User.new(user_params)
+      @user.save!
+      stripe_payment!
+      UserMailer.delay.welcome(@user)
+      build_relationship_with_inviter
+      redirect_to sign_in_path
+    end
+  end
+
+  def stripe_payment!
+    token = params[:stripeToken]
+    email = params[:stripeEmail]
+
+    charge = Stripe::Charge.create(
+    :amount => 999, # amount in cents, again
+    :currency => "usd",
+    :source => token,
+    :description => "payment of #{email}"
+    )
   end
 end
