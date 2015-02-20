@@ -22,9 +22,9 @@ describe Category do
     context "when there are more than 6 video in the category" do
       let(:tv) { Category.create(name: "tv") }
       let!(:dummy) do
-        6.times { Video.create(category: tv, title: "video", description: "a video") }
+        6.times { Fabricate(:video, category: tv, title: "video", description: "a video") }
       end
-      let(:one_piece) {Video.create(category: tv, title: "One Piece", description: "a great cartoon", created_at: 6.day.ago)}
+      let(:one_piece) {Fabricate(:video, category: tv, title: "One Piece", description: "a great cartoon", created_at: 6.day.ago)}
 
       it "returns 6 videos" do
         expect(tv.recent_videos.count).to eq(6)

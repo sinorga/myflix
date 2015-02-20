@@ -10,3 +10,7 @@ Fabricator(:invalid_user, from: :user) do
   password { Faker::Internet.password }
   full_name { Faker::Name.name }
 end
+
+Fabricator(:admin, from: :user) do
+  admin true
+end

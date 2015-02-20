@@ -16,3 +16,6 @@
 
 # Ignore sensitive config file
 config/database.yml
+
+# Ignore development uploaded files
+public/uploads

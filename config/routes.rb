@@ -30,4 +30,8 @@ Myflix::Application.routes.draw do
   resources :followees, only: [:destroy, :create]
   resources :reset_password, only: [:edit, :update]
   resources :invitations, only: [:create]
+
+  namespace :admin do
+    resources :videos, only: [:new, :create]
+  end
 end
