@@ -1,13 +1,6 @@
 if Rails.env.development? or Rails.env.test?
-  Rails.configuration.stripe = {
-    :publishable_key => "pk_test_jS6BKf6bMnfVZ9BiaUf533kd",
-    :secret_key      => "sk_test_oRx3n1ew0kZIkY9hLvPMV8Dy"
-  }
-else
-  Rails.configuration.stripe = {
-    :publishable_key => ENV['PUBLISHABLE_KEY'],
-    :secret_key      => ENV['SECRET_KEY']
-  }
+  ENV['STRIPE_PUBLISHABLE_KEY'] = "pk_test_jS6BKf6bMnfVZ9BiaUf533kd"
+  ENV['STRIPE_SECRET_KEY'] = "sk_test_oRx3n1ew0kZIkY9hLvPMV8Dy"
 end
 
-Stripe.api_key = Rails.configuration.stripe[:secret_key]
+Stripe.api_key = ENV['STRIPE_SECRET_KEY']

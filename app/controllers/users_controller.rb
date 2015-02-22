@@ -64,13 +64,12 @@ class UsersController < ApplicationController
 
   def stripe_payment!
     token = params[:stripeToken]
-    email = params[:stripeEmail]
 
     charge = Stripe::Charge.create(
     :amount => 999, # amount in cents, again
     :currency => "usd",
     :source => token,
-    :description => "payment of #{email}"
+    :description => "payment of #{@user.email}"
     )
   end
 end
