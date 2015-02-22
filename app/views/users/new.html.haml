@@ -1,3 +1,9 @@
+- content_for :head do
+  %script(src="https://js.stripe.com/v2/")
+  :javascript
+    Stripe.setPublishableKey('#{ENV['STRIPE_PUBLISHABLE_KEY']}');
+  = javascript_include_tag "payments"
+
 %section.register.container
   .row
     .col-sm-10.col-sm-offset-1
@@ -10,5 +16,22 @@
           = f.email_field :email, label: "Email Address", label_col: "col-sm-2", control_col: "col-sm-6"
           = f.password_field :password, label: "Password", label_col: "col-sm-2", control_col: "col-sm-6"
           = f.text_field :full_name, label: "Full Name", label_col: "col-sm-2", control_col: "col-sm-6"
+        %fieldset.credit_card
+          .form-group
+            %span.payment-errors
+          .form-group
+            %label.control-label.col-sm-2 Credit Card Number
+            .col-sm-6
+              %input.form-control.card-number(type="text" size="20" data-stripe="number")
+          .form-group
+            %label.control-label.col-sm-2 Security Code
+            .col-sm-6
+              %input.form-control.card-cvc(type="text" size="4" data-stripe="cvc")
+          .form-group
+            %label.control-label.col-sm-2 Expiration
+            .col-sm-3
+              = select_month(Date.today, {add_month_numbers: true}, name: nil,  class: 'form-control card-expiry-month', data: { stripe: "exp_month"})
+            .col-sm-2
+              = select_year(Date.today.year, {start_year: Date.today.year, end_year: Date.today.year + 4}, name: nil, class: 'form-control card-expiry-year', data: { stripe: "exp_year"})
         %fieldset.actions.control-group.col-sm-offset-2
           = f.submit "Sign Up", class: "btn btn-default"
