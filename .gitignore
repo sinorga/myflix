@@ -22,3 +22,9 @@ public/uploads
 
 # Ignore application configuration
 /config/application.yml
+
+# Ignore ctags file
+tags
+
+# Ignore vcr generated data for testing
+/spec/cassettes

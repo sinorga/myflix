@@ -12,7 +12,7 @@ class UsersController < ApplicationController
   def create
     begin
       create_paid_user
-    rescue Stripe::CardError => e
+    rescue StripeWrapper::CardError => e
       flash[:danger] = e.message
       render :new
     rescue
@@ -65,11 +65,10 @@ class UsersController < ApplicationController
   def stripe_payment!
     token = params[:stripeToken]
 
-    charge = Stripe::Charge.create(
-    :amount => 999, # amount in cents, again
-    :currency => "usd",
-    :source => token,
-    :description => "payment of #{@user.email}"
+    charge = StripeWrapper::Charge.create(
+      :amount => 999, # amount in cents, again
+      :source => token,
+      :description => "payment of #{@user.email}"
     )
   end
 end
