@@ -37,6 +37,7 @@ describe UsersController do
     context "with valid input" do
       let(:user) { Fabricate.build(:user) }
       before do
+        StripeWrapper::Charge.stub(:create)
         post :create, user: {email: user.email, password: user.password, full_name: user.full_name}
       end
 
@@ -72,6 +73,7 @@ describe UsersController do
       let(:alice) { Fabricate(:user) }
       let(:invite_bob) { Fabricate(:invitation, inviter: alice) }
       before do
+        StripeWrapper::Charge.stub(:create)
         post :create, invite_token: invite_bob.token, user: {
           email: invite_bob.email,
           password: "zbAdd",
