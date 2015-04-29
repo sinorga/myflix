@@ -27,6 +27,8 @@ VCR.configure do |c|
   c.hook_into :webmock
   c.configure_rspec_metadata!
   c.ignore_localhost = true
+  c.allow_http_connections_when_no_cassette = true
+  #c.debug_logger = File.open(Rails.root.join("vcr.log"), 'w')
 end
 
 Capybara.server_port = 52662
