@@ -8,9 +8,9 @@ feature "User signs up" , js: true, vcr: true do
 
     click_on "Sign Up"
     #its used for waiting stripe done
-    expect(page).to have_content("Sign in", wait: 20)
-
+    expect(page).to have_content("Thanks for your registration, please sign in now.", wait: 20)
   end
+
   feature "with invalid user info" do
     background { fill_in_card_info("4242424242424242") }
     scenario "signs up failed when user name is blank" do
@@ -48,6 +48,16 @@ feature "User signs up" , js: true, vcr: true do
       click_on "Sign Up"
       expect(page).to have_content("Your card was declined.", wait: 20)
     end
+  end
+
+  scenario "signs up failed with invalid user and declined card" do
+    bob = Fabricate.build(:user, full_name: "")
+    fill_in_user_info(bob)
+    fill_in_card_info("4000000000000002")
+
+    click_on "Sign Up"
+    expect(page).to have_content("Please check your input below.")
+    expect(page).to have_content("can't be blank")
   end
 
   def fill_in_user_info(user=nil)
