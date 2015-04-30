@@ -1,7 +1,7 @@
 require "spec_helper"
 
 feature "User invites friend" do
-  scenario "user invite his friend successfully" do
+  scenario "user invite his friend successfully", js: true, vcr: true do
     alice = Fabricate(:user)
     invite_bob = Fabricate.build(:invitation)
     bob = Fabricate.build(:user, email: invite_bob.email)
@@ -16,7 +16,7 @@ feature "User invites friend" do
   end
 
   def invite_a_friend(invited_friend)
-    click_on "Invite a friend"
+    visit invite_path
     fill_in("Friend's Name", with: invited_friend.name)
     fill_in("Friend's Email Address", with: invited_friend.email)
     fill_in("Invitation Message", with: invited_friend.message)
@@ -36,8 +36,13 @@ feature "User invites friend" do
     expect_have_prefilled_email(friend)
     fill_in("Password", with: friend.password)
     fill_in("Full Name", with: friend.full_name)
+    fill_in("Credit Card Number", with: "4242424242424242")
+    fill_in("Security Code", with: "123")
+    select("7 - July", from: "date_month")
+    select("2019", from: "date_year")
     click_on "Sign Up"
-    expect(current_path).to eq(sign_in_path)
+    #its used for waiting stripe done
+    expect(page).to have_content("Sign in", wait: 20)
   end
 
   def expect_have_prefilled_email(friend)

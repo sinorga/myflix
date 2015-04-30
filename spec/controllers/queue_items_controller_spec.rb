@@ -136,7 +136,8 @@ describe QueueItemsController do
 
         it "doesn't change any records if one of queue_item is not exist" do
           put :update_queue, queue_items: {
-            queue_item1.id => {position: 4},
+            queue_item1.id => {position: 2},
+            queue_item2.id => {position: 1},
             8 => {position: 3}
           }
           expect(queue_item1.reload.position).to eq(1)

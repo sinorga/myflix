@@ -37,7 +37,8 @@ describe UsersController do
     context "with valid input" do
       let(:user) { Fabricate.build(:user) }
       before do
-        post :create, user: {email: user.email, password: user.password, full_name: user.full_name}
+        expect(StripeWrapper::Charge).to receive(:create)
+        post :create, user: {email: user.email, password: user.password, full_name: user.full_name}, stripeToken: "xxxxxxxxxxxxx"
       end
 
       it "creates user record" do
@@ -72,6 +73,7 @@ describe UsersController do
       let(:alice) { Fabricate(:user) }
       let(:invite_bob) { Fabricate(:invitation, inviter: alice) }
       before do
+        expect(StripeWrapper::Charge).to receive(:create)
         post :create, invite_token: invite_bob.token, user: {
           email: invite_bob.email,
           password: "zbAdd",
@@ -94,9 +96,37 @@ describe UsersController do
       end
     end
 
-    context "with invalid input" do
+    context "with valid personal info and declined card" do
       before do
-        post :create, user: Fabricate.attributes_for(:invalid_user)
+        expect(StripeWrapper::Charge).to receive(:create).and_raise(StripeWrapper::CardError)
+        post :create, user: Fabricate.attributes_for(:user), stripeToken: "12341234"
+      end
+
+      it "dose not create user record" do
+        expect(User.count).to eq(0)
+      end
+
+      it "renders the :new template" do
+        expect(response).to render_template :new
+      end
+
+      it "sets @user variable" do
+        expect(assigns(:user)).to be_a_new(User)
+      end
+
+      it "does not sent out the email" do
+        expect(ActionMailer::Base.deliveries).to be_empty
+      end
+
+      it "flash danger message" do
+        expect(flash[:danger]).to be_present
+      end
+    end
+
+    context "with invalid personal info and valid card" do
+      before do
+        expect(StripeWrapper::Charge).not_to receive(:create)
+        post :create, user: Fabricate.attributes_for(:invalid_user), stripeToken: "12341234"
       end
 
       it "dose not create user record" do

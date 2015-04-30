@@ -12,10 +12,10 @@ class UsersController < ApplicationController
   def create
     begin
       create_paid_user
-    rescue Stripe::CardError => e
+    rescue StripeWrapper::CardError => e
       flash[:danger] = e.message
       render :new
-    rescue
+    rescue ActiveRecord::RecordInvalid => e
       flash.delete(:danger)
       render :new
     end
@@ -58,6 +58,7 @@ class UsersController < ApplicationController
       stripe_payment!
       UserMailer.delay.welcome(@user)
       build_relationship_with_inviter
+      flash[:success] = "Thanks for your registration, please sign in now."
       redirect_to sign_in_path
     end
   end
@@ -65,11 +66,10 @@ class UsersController < ApplicationController
   def stripe_payment!
     token = params[:stripeToken]
 
-    charge = Stripe::Charge.create(
-    :amount => 999, # amount in cents, again
-    :currency => "usd",
-    :source => token,
-    :description => "payment of #{@user.email}"
+    charge = StripeWrapper::Charge.create(
+      :amount => 999, # amount in cents, again
+      :source => token,
+      :description => "payment of #{@user.email}"
     )
   end
 end
