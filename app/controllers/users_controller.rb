@@ -52,7 +52,7 @@ class UsersController < ApplicationController
   end
 
   def create_paid_user
-    User.transaction(requires_new: true) do
+    User.transaction do
       @user = User.new(user_params)
       @user.save!
       stripe_payment!
