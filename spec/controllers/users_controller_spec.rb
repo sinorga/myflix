@@ -36,74 +36,62 @@ describe UsersController do
 
     context "with valid input" do
       let(:user) { Fabricate.build(:user) }
+      let(:registrator) { double(:registrator, success?: true) }
       before do
-        expect(StripeWrapper::Charge).to receive(:create)
-        post :create, user: {email: user.email, password: user.password, full_name: user.full_name}, stripeToken: "xxxxxxxxxxxxx"
-      end
+        expect(UserRegistrator).to receive(:new)
+          .with(an_instance_of(User))
+          .and_return(registrator)
+        expect(registrator).to receive(:register).with("xxxxxxxxxxxxx", nil)
+          .and_return(registrator)
 
-      it "creates user record" do
-        expect(User.count).to eq(1)
-        expect(User.first.email).to eq(user.email)
-        expect(User.first.authenticate(user.password)).not_to eq(false)
-        expect(User.first.full_name).to eq(user.full_name)
+        post :create, user: {
+          email: user.email,
+          password: user.password,
+          full_name: user.full_name
+        }, stripeToken: "xxxxxxxxxxxxx"
       end
 
       it "redirects to sign in path" do
         expect(response).to redirect_to sign_in_path
       end
 
-      context "sends welcome email" do
-        it "sends out the email" do
-          expect(ActionMailer::Base.deliveries).not_to be_empty
-        end
-
-        it "sends to the signed up user" do
-          message = ActionMailer::Base.deliveries.last
-          expect(message.to).to eq([user.email])
-        end
-
-        it "has the right content" do
-          message = ActionMailer::Base.deliveries.last
-          expect(message.body).to include(user.full_name)
-        end
+      it "flashes success message" do
+        expect(flash[:success]).to be_present
       end
     end
 
     context "with valid input and inviter" do
       let(:alice) { Fabricate(:user) }
       let(:invite_bob) { Fabricate(:invitation, inviter: alice) }
-      before do
-        expect(StripeWrapper::Charge).to receive(:create)
+      let(:registrator) { double(:registrator, success?: true) }
+
+      it "calls UserRegistrator to connect friendshop" do
+        expect(UserRegistrator).to receive(:new)
+          .with(an_instance_of(User))
+          .and_return(registrator)
+        expect(registrator).to receive(:register).with("xxxxxxxxxxxxx", invite_bob.token)
+          .and_return(registrator)
+
         post :create, invite_token: invite_bob.token, user: {
           email: invite_bob.email,
           password: "zbAdd",
           full_name: "Mr. bob"
-          }
-      end
-
-      it "sets user follow the inviter" do
-        bob = User.last
-        expect(bob.followees.first).to eq(alice)
-      end
-
-      it "sets inviter follow the user" do
-        bob = User.last
-        expect(alice.followees.first).to eq(bob)
-      end
-
-      it "expires invitation record" do
-        expect(Invitation.last.token).to be_nil
+        }, stripeToken: "xxxxxxxxxxxxx"
       end
     end
 
     context "with valid personal info and declined card" do
-      before do
-        expect(StripeWrapper::Charge).to receive(:create).and_raise(StripeWrapper::CardError)
-        post :create, user: Fabricate.attributes_for(:user), stripeToken: "12341234"
+      let(:registrator) do
+        double(:registrator, success?: false, card_error?: true, message: "card error!")
       end
+      before do
+        expect(UserRegistrator).to receive(:new)
+          .with(an_instance_of(User))
+          .and_return(registrator)
+        expect(registrator).to receive(:register).with("12341234", nil)
+          .and_return(registrator)
 
-      it "dose not create user record" do
-        expect(User.count).to eq(0)
+        post :create, user: Fabricate.attributes_for(:user), stripeToken: "12341234"
       end
 
       it "renders the :new template" do
@@ -112,10 +100,6 @@ describe UsersController do
 
       it "sets @user variable" do
         expect(assigns(:user)).to be_a_new(User)
-      end
-
-      it "does not sent out the email" do
-        expect(ActionMailer::Base.deliveries).to be_empty
       end
 
       it "flash danger message" do
@@ -124,13 +108,17 @@ describe UsersController do
     end
 
     context "with invalid personal info and valid card" do
-      before do
-        expect(StripeWrapper::Charge).not_to receive(:create)
-        post :create, user: Fabricate.attributes_for(:invalid_user), stripeToken: "12341234"
+      let(:registrator) do
+        double(:registrator, success?: false, card_error?: false)
       end
+      before do
+        expect(UserRegistrator).to receive(:new)
+          .with(an_instance_of(User))
+          .and_return(registrator)
+        expect(registrator).to receive(:register).with("xxxxxxxxxxxxx", nil)
+          .and_return(registrator)
 
-      it "dose not create user record" do
-        expect(User.count).to eq(0)
+        post :create, user: Fabricate.attributes_for(:invalid_user), stripeToken: "xxxxxxxxxxxxx"
       end
 
       it "renders the :new template" do
@@ -141,8 +129,8 @@ describe UsersController do
         expect(assigns(:user)).to be_a_new(User)
       end
 
-      it "does not sent out the email" do
-        expect(ActionMailer::Base.deliveries).to be_empty
+      it "does not flash danger message" do
+        expect(flash[:danger]).to be_blank
       end
     end
   end
