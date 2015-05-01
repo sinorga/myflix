@@ -15,6 +15,6 @@ class Video < ActiveRecord::Base
   end
 
   def average_rating
-    reviews.empty? ? 0 : (reviews.map(&:rating).map(&:to_f).reduce(:+) / reviews.count)
+    reviews.empty? ? nil : (reviews.map(&:rating).map(&:to_f).reduce(:+) / reviews.count)
   end
 end

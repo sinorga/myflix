@@ -69,8 +69,8 @@ describe Video do
 
   describe "#average_rating" do
     let(:video) { Fabricate(:video) }
-    it "returns 0 if there is not any review" do
-      expect(video.average_rating).to eq(0)
+    it "returns nil if there is not any review" do
+      expect(video.average_rating).to be_nil
     end
 
     it "returns the rating of review if there is only one review" do
