@@ -13,6 +13,7 @@ describe VideosController do
       video = Fabricate(:video)
       get :show, id: video.id
       expect(assigns(:video)).to eq(video)
+      expect(assigns(:video)).to be_decorated_with VideoDecorator
     end
 
     it "sets @reviews for authenticated users" do
