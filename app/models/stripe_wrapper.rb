@@ -9,11 +9,11 @@ module StripeWrapper
   class Charge
     def self.create(opt={})
       begin
-        charge = Stripe::Charge.create(
-          :amount => opt[:amount], # amount in cents, again
-          :currency => "usd",
-          :source => opt[:source],
-          :description => opt[:description]
+        Stripe::Charge.create(
+          amount: opt[:amount], # amount in cents, again
+          currency: "usd",
+          source: opt[:source],
+          description: opt[:description]
         )
       rescue Stripe::CardError => e
         raise CardError.new(e.message)
@@ -23,12 +23,14 @@ module StripeWrapper
 
   class Customer
     def self.create(opt={})
+      user = opt[:user]
       begin
         customer = Stripe::Customer.create(
-          :source => opt[:source],
-          :plan => "gold",
-          :email => opt[:email]
+          source: opt[:source],
+          plan: "gold",
+          email: user.email
         )
+        user.update!(strip_id: customer.id)
       rescue Stripe::CardError => e
         raise CardError.new(e.message)
       end

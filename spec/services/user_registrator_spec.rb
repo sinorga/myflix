@@ -11,8 +11,8 @@ describe UserRegistrator do
       before do
         expect(StripeWrapper::Customer).to receive(:create)
         .with(
-          :source => "xxxxxxxxxxxxx",
-          :email => user.email
+          source: "xxxxxxxxxxxxx",
+          user: user
         )
       end
 
@@ -58,8 +58,8 @@ describe UserRegistrator do
       before do
         expect(StripeWrapper::Customer).to receive(:create)
           .with(
-            :source => "xxxxxxxxxxxxx",
-            :email => bob.email
+            source: "xxxxxxxxxxxxx",
+            user: bob
           )
         registrator.register("xxxxxxxxxxxxx", invitation_from_alice.token)
       end
@@ -85,8 +85,8 @@ describe UserRegistrator do
       before do
         expect(StripeWrapper::Customer).to receive(:create)
           .with(
-            :source => "12341234",
-            :email => user.email
+            source: "12341234",
+            user: user
           ).and_raise(StripeWrapper::CardError)
       end
 

@@ -38,9 +38,9 @@ class UserRegistrator
   end
 
   def stripe_payment!(stripe_token)
-    customer = StripeWrapper::Customer.create(
+    StripeWrapper::Customer.create(
       :source => stripe_token,
-      :email => user.email
+      :user => user
     )
   end
 
