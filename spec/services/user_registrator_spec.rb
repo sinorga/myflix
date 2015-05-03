@@ -9,7 +9,11 @@ describe UserRegistrator do
       let(:user) { Fabricate(:user) }
       let(:registrator) { UserRegistrator.new(user) }
       before do
-        expect(StripeWrapper::Charge).to receive(:create)
+        expect(StripeWrapper::Customer).to receive(:create)
+        .with(
+          :source => "xxxxxxxxxxxxx",
+          :email => user.email
+        )
       end
 
       it "creates user record" do
@@ -52,11 +56,10 @@ describe UserRegistrator do
         UserRegistrator.new(bob)
       end
       before do
-        expect(StripeWrapper::Charge).to receive(:create)
+        expect(StripeWrapper::Customer).to receive(:create)
           .with(
-            :amount => 999,
             :source => "xxxxxxxxxxxxx",
-            :description => "payment of #{bob.email}"
+            :email => bob.email
           )
         registrator.register("xxxxxxxxxxxxx", invitation_from_alice.token)
       end
@@ -80,11 +83,10 @@ describe UserRegistrator do
       let(:user) { Fabricate.build(:user) }
       let(:registrator) { UserRegistrator.new(user) }
       before do
-        expect(StripeWrapper::Charge).to receive(:create)
+        expect(StripeWrapper::Customer).to receive(:create)
           .with(
-            :amount => 999,
             :source => "12341234",
-            :description => "payment of #{user.email}"
+            :email => user.email
           ).and_raise(StripeWrapper::CardError)
       end
 
@@ -111,7 +113,7 @@ describe UserRegistrator do
       let(:user) { Fabricate.build(:invalid_user) }
       let(:registrator) { UserRegistrator.new(user) }
       before do
-        expect(StripeWrapper::Charge).not_to receive(:create)
+        expect(StripeWrapper::Customer).not_to receive(:create)
       end
 
       it "dose not create user record" do
