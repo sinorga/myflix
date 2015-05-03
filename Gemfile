@@ -20,6 +20,7 @@ gem "fog"
 gem 'stripe'
 gem 'figaro'
 gem 'draper'
+gem 'stripe_event'
 
 group :development do
   gem 'thin'

@@ -30,9 +30,19 @@ module StripeWrapper
           plan: "gold",
           email: user.email
         )
-        user.update!(strip_id: customer.id)
+        user.update!(stripe_id: customer.id)
       rescue Stripe::CardError => e
         raise CardError.new(e.message)
+      end
+    end
+  end
+
+  module EventHandler
+    class ChargeSucceeded
+      def call(event)
+        charge = event.data.object
+        user = User.find_by!(stripe_id: charge.customer)
+        user.payments.create!(amount: charge.amount, stripe_charge_id: charge.id)
       end
     end
   end

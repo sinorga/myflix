@@ -73,6 +73,8 @@ GEM
     database_cleaner (1.2.0)
     debug_inspector (0.0.2)
     diff-lcs (1.2.5)
+    domain_name (0.5.24)
+      unf (>= 0.0.5, < 1.0.0)
     dotenv (1.0.2)
     draper (2.1.0)
       actionpack (>= 3.0)
@@ -184,13 +186,15 @@ GEM
       multi_json (~> 1.8)
     hike (1.2.3)
     hitimes (1.2.2)
+    http-cookie (1.0.2)
+      domain_name (~> 0.5)
     i18n (0.6.9)
     inflecto (0.0.2)
     ipaddress (0.8.0)
     jquery-rails (3.0.4)
       railties (>= 3.0, < 5.0)
       thor (>= 0.14, < 2.0)
-    json (1.8.1)
+    json (1.8.2)
     kgio (2.9.3)
     launchy (2.4.3)
       addressable (~> 2.3)
@@ -209,7 +213,7 @@ GEM
     net-scp (1.2.1)
       net-ssh (>= 2.6.5)
     net-ssh (2.9.2)
-    netrc (0.10.2)
+    netrc (0.10.3)
     nokogiri (1.6.5)
       mini_portile (~> 0.6.0)
     paratrooper (2.4.1)
@@ -255,7 +259,8 @@ GEM
       redis (~> 3.0, >= 3.0.4)
     rendezvous (0.0.2)
     request_store (1.1.0)
-    rest-client (1.7.3)
+    rest-client (1.8.0)
+      http-cookie (>= 1.0.2, < 2.0)
       mime-types (>= 1.16, < 3.0)
       netrc (~> 0.7)
     rspec-collection_matchers (1.0.0)
@@ -306,10 +311,12 @@ GEM
       actionpack (>= 3.0)
       activesupport (>= 3.0)
       sprockets (~> 2.8)
-    stripe (1.20.0)
+    stripe (1.21.0)
       json (~> 1.8.1)
-      mime-types (>= 1.25, < 3.0)
       rest-client (~> 1.4)
+    stripe_event (1.5.0)
+      activesupport (>= 3.1)
+      stripe (~> 1.6)
     thin (1.5.0)
       daemons (>= 1.0.9)
       eventmachine (>= 0.12.6)
@@ -327,6 +334,9 @@ GEM
     uglifier (2.3.1)
       execjs (>= 0.3.0)
       json (>= 1.8.0)
+    unf (0.1.4)
+      unf_ext
+    unf_ext (0.0.7.1)
     unicorn (4.8.3)
       kgio (~> 2.6)
       rack
@@ -377,6 +387,7 @@ DEPENDENCIES
   shoulda-matchers
   sidekiq
   stripe
+  stripe_event
   thin
   uglifier
   unicorn

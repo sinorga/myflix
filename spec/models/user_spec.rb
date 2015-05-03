@@ -14,6 +14,8 @@ describe User do
   it { should have_many(:followee_maps).with_foreign_key('follower_id').class_name('Followership') }
   it { should have_many(:followees).through(:followee_maps) }
 
+  it { should have_many(:payments)}
+  
   describe "#queued_video?" do
     it "returns true when the user queued the video" do
       user = Fabricate(:user)

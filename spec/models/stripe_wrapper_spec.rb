@@ -75,4 +75,15 @@ describe StripeWrapper do
       end
     end
   end
+
+  describe StripeWrapper::EventHandler do
+    describe ChargeSucceeded do
+      describe "call" do
+        it "creates payment" do
+          
+        end
+        it "associates payment with user"
+      end
+    end
+  end
 end

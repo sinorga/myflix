@@ -1,0 +1,71 @@
+{
+	"id": "evt_15yLWB4EwpIVSrdkaeLWWB9L",
+	"created": 1430653459,
+	"livemode": false,
+	"type": "charge.succeeded",
+	"data": {
+		"object": {
+			"id": "ch_15yLBU4EwpIVSrdk5huXO982",
+			"object": "charge",
+			"created": 1430652176,
+			"livemode": false,
+			"paid": true,
+			"status": "paid",
+			"amount": 999,
+			"currency": "usd",
+			"refunded": false,
+			"source": {
+				"id": "card_15yLBT4EwpIVSrdkzybIXI49",
+				"object": "card",
+				"last4": "4242",
+				"brand": "Visa",
+				"funding": "credit",
+				"exp_month": 10,
+				"exp_year": 2015,
+				"fingerprint": "JOaMCD3EefOMboZC",
+				"country": "US",
+				"name": null,
+				"address_line1": null,
+				"address_
+				"captured": true,
+				"card": {
+					"id": "card_15yLBT4EwpIVSrdkzybIXI49",
+					"object": "card",
+					"last4": "4242",
+					"brand": "Visa",
+					"funding": "credit",
+					"exp_month": 10,
+					"exp_year": 2015,
+					"fingerprint": "JOaMCD3EefOMboZC",
+					"country": "US",
+					"name": null,
+					"address_line1": null,
+					"address_li
+					"balance_transaction": "txn_15yLBU4EwpIVSrdkLeWzUcuI",
+					"failure_message": null,
+					"failure_code": null,
+					"amount_refunded": 0,
+					"customer": "cus_6AgYmvK7zlJZmb",
+					"invoice": "in_15yLBU4EwpIVSrdk2jwTQmvf",
+					"description": null,
+					"dispute": null,
+					"metadata": {},
+					"statement_descriptor": "Paid users",
+					"fraud_details": {},
+					"receipt_email": null,
+					"receipt_number": null,
+					"shipping": null,
+					"application_fee": null,
+					"refunds": {
+						"object": "list",
+						"total_count": 0,
+						"has_more": false,
+						"url": "/v1/charges/ch_15yLBU4EwpIVSrdk5huXO982/refunds",
+						"data": []
+					},
+					"statement_description": "Paid users"
+				}
+			}
+		}
+	}
+}

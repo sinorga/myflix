@@ -9,6 +9,8 @@ class User < ActiveRecord::Base
   has_many :followee_maps, foreign_key: 'follower_id', class_name: 'Followership', dependent: :destroy
   has_many :followees, through: :followee_maps
 
+  has_many :payments
+
   validates_presence_of :email, :full_name
   validates_presence_of :password
   validates_uniqueness_of :email
