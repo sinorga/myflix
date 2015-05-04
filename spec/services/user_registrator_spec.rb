@@ -13,7 +13,7 @@ describe UserRegistrator do
         .with(
           source: "xxxxxxxxxxxxx",
           user: user
-        )
+        ).and_return(StripeWrapper::Customer.new("cus_xxxxxxxx"))
       end
 
       it "creates user record" do
@@ -22,6 +22,7 @@ describe UserRegistrator do
         expect(User.first.email).to eq(user.email)
         expect(User.first.authenticate(user.password)).not_to eq(false)
         expect(User.first.full_name).to eq(user.full_name)
+        expect(User.first.stripe_id).to eq("cus_xxxxxxxx")
       end
 
       it "returns self with success status" do
@@ -60,7 +61,7 @@ describe UserRegistrator do
           .with(
             source: "xxxxxxxxxxxxx",
             user: bob
-          )
+          ).and_return(StripeWrapper::Customer.new("cus_xxxxxxxx"))
         registrator.register("xxxxxxxxxxxxx", invitation_from_alice.token)
       end
 

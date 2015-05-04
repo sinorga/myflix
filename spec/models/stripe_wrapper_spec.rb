@@ -53,12 +53,12 @@ describe StripeWrapper do
           }.not_to raise_error
         end
 
-        it "stores customer id in user" do
-          StripeWrapper::Customer.create(
+        it "returns customer id for valid card" do
+          customer = StripeWrapper::Customer.create(
               :source => token,
               :user => alice
           )
-          expect(alice.reload.stripe_id).to be_present
+          expect(customer.customer_id).to be_present
         end
       end
 
@@ -72,17 +72,6 @@ describe StripeWrapper do
             )
           }.to raise_error(StripeWrapper::CardError, "Your card was declined.")
         end
-      end
-    end
-  end
-
-  describe StripeWrapper::EventHandler do
-    describe ChargeSucceeded do
-      describe "call" do
-        it "creates payment" do
-          
-        end
-        it "associates payment with user"
       end
     end
   end

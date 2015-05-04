@@ -1,6 +1,6 @@
 class Admin::PaymentsController < AdminsController
 
   def index
-    @payments = Payment.all.decorate
+    @payments = Payment.all
   end
 end

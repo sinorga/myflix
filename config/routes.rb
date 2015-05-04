@@ -13,7 +13,7 @@ Myflix::Application.routes.draw do
   get 'people', to: 'followees#index'
   get 'invite', to: 'invitations#new'
 
-  mount StripeEvent::Engine, at: '/stripe_charge_succeeded'
+  mount StripeEvent::Engine, at: '/stripe_events'
 
   resources :videos, only: [:show] do
     collection do

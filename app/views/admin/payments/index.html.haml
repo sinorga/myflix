@@ -20,5 +20,5 @@
                 %tr
                   %td=payment.full_name
                   %td=payment.email
-                  %td=payment.show_amount
+                  %td=number_to_currency(payment.amount/100.0)
                   %td=payment.stripe_charge_id

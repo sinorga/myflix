@@ -22,6 +22,12 @@ module StripeWrapper
   end
 
   class Customer
+    attr_reader :customer_id
+
+    def initialize(customer_id)
+      @customer_id = customer_id
+    end
+    
     def self.create(opt={})
       user = opt[:user]
       begin
@@ -30,7 +36,7 @@ module StripeWrapper
           plan: "gold",
           email: user.email
         )
-        user.update!(stripe_id: customer.id)
+        new(customer.id)
       rescue Stripe::CardError => e
         raise CardError.new(e.message)
       end

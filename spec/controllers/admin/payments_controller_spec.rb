@@ -10,9 +10,6 @@ describe Admin::PaymentsController do
 
     it "sets @payments variable" do
       expect(assigns(:payments)).to match_array(payments)
-      assigns(:payments).each do |payment|
-        expect(payment).to be_decorated_with PaymentDecorator
-      end
     end
 
     it "renders the index page" do
