@@ -1,8 +1,4 @@
 module StripeWrapper
-  def self.set_api_key(key)
-    Stripe.api_key = key
-  end
-
   class CardError < StandardError
   end
 
@@ -44,16 +40,19 @@ module StripeWrapper
   end
 
   module EventHandler
-    class ChargeSucceeded
+    class Charge
       def call(event)
         charge = event.data.object
+        type = event.type.sub('charge.', '')
+        send(type, charge)
+      end
+
+      def succeeded(charge)
         user = User.find_by!(stripe_id: charge.customer)
         user.payments.create!(amount: charge.amount, stripe_charge_id: charge.id)
       end
-    end
-    class ChargeFailed
-      def call(event)
-        charge = event.data.object
+
+      def failed(charge)
         if charge.customer
           user = User.find_by!(stripe_id: charge.customer)
           user.deactivate

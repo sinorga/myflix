@@ -15,8 +15,7 @@ class UsersController < ApplicationController
     result = UserRegistrator.new(@user).register(params[:stripeToken], params[:invite_token])
 
     if result.success?
-      flash[:success] = "Thanks for your registration, please sign in now."
-      redirect_to sign_in_path
+      redirect_to sign_in_path, success: "Thanks for your registration, please sign in now."
     elsif result.card_error?
       flash[:danger] = result.message
       render :new

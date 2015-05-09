@@ -1,6 +1,5 @@
-StripeWrapper.set_api_key(ENV['STRIPE_SECRET_KEY'])
+Stripe.api_key=ENV['STRIPE_SECRET_KEY']
 
 StripeEvent.configure do |events|
-  events.subscribe 'charge.succeeded', StripeWrapper::EventHandler::ChargeSucceeded.new
-  events.subscribe 'charge.failed', StripeWrapper::EventHandler::ChargeFailed.new
+  events.subscribe 'charge.', StripeWrapper::EventHandler::Charge.new
 end

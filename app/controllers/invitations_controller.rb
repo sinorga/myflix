@@ -9,8 +9,7 @@ class InvitationsController < ApplicationController
     @invitation = current_user.invitations.build(invitation_params)
     if @invitation.save
       UserMailer.delay.send_invitation(@invitation)
-      flash[:success] = "You invited user #{@invitation.name}"
-      redirect_to home_path
+      redirect_to home_path, success: "You invited user #{@invitation.name}"
     else
       flash.now[:danger] = "Invalid input"
       render :new

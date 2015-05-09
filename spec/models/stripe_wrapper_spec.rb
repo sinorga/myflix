@@ -3,11 +3,11 @@ require 'spec_helper'
 describe StripeWrapper do
   let(:token) do
     Stripe::Token.create(
-      :card => {
-        :number => card_number,
-        :exp_month => 3,
-        :exp_year => 2016,
-        :cvc => "314"
+      card: {
+        number: card_number,
+        exp_month: 3,
+        exp_year: 2016,
+        cvc: "314"
       },
     ).id
   end
@@ -18,8 +18,8 @@ describe StripeWrapper do
         it "charges the card successfully", :vcr do
           expect{
             StripeWrapper::Charge.create(
-                :amount => 999, # amount in cents, again
-                :source => token,
+                amount: 999, # amount in cents, again
+                source: token,
                 )
           }.not_to raise_error
         end
@@ -30,8 +30,8 @@ describe StripeWrapper do
         it "raise an exception with error message", :vcr do
           expect{
             StripeWrapper::Charge.create(
-              :amount => 999, # amount in cents, again
-              :source => token,
+              amount: 999, # amount in cents, again
+              source: token,
             )
           }.to raise_error(StripeWrapper::CardError, "Your card was declined.")
         end
@@ -47,16 +47,16 @@ describe StripeWrapper do
         it "customer subscribe successfully", :vcr do
           expect{
             StripeWrapper::Customer.create(
-              :source => token,
-              :user => alice
+              source: token,
+              user: alice
             )
           }.not_to raise_error
         end
 
         it "returns customer id for valid card" do
           customer = StripeWrapper::Customer.create(
-              :source => token,
-              :user => alice
+              source: token,
+              user: alice
           )
           expect(customer.customer_id).to be_present
         end
@@ -67,8 +67,8 @@ describe StripeWrapper do
         it "raise an exception with error message", :vcr do
           expect{
             StripeWrapper::Customer.create(
-                :source => token,
-                :user => alice
+                source: token,
+                user: alice
             )
           }.to raise_error(StripeWrapper::CardError, "Your card was declined.")
         end
