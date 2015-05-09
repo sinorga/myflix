@@ -45,4 +45,8 @@ class User < ActiveRecord::Base
   def generate_invite_token
     update_column(:invite_token, SecureRandom.urlsafe_base64)
   end
+
+  def deactivate
+    update_column(:active, false)
+  end
 end

@@ -27,7 +27,7 @@ module StripeWrapper
     def initialize(customer_id)
       @customer_id = customer_id
     end
-    
+
     def self.create(opt={})
       user = opt[:user]
       begin
@@ -49,6 +49,16 @@ module StripeWrapper
         charge = event.data.object
         user = User.find_by!(stripe_id: charge.customer)
         user.payments.create!(amount: charge.amount, stripe_charge_id: charge.id)
+      end
+    end
+    class ChargeFailed
+      def call(event)
+        charge = event.data.object
+        if charge.customer
+          user = User.find_by!(stripe_id: charge.customer)
+          user.deactivate
+          UserMailer.delay.charge_failed_notify(user, charge.failure_message)
+        end
       end
     end
   end

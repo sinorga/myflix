@@ -15,7 +15,7 @@ describe User do
   it { should have_many(:followees).through(:followee_maps) }
 
   it { should have_many(:payments)}
-  
+
   describe "#queued_video?" do
     it "returns true when the user queued the video" do
       user = Fabricate(:user)
@@ -82,6 +82,14 @@ describe User do
 
     it "saves the token" do
       expect(User.first.password_reset_token).to be_nil
+    end
+  end
+
+  describe "#deactivate" do
+    let(:alice) { Fabricate(:user) }
+    it "deactivate user" do
+      alice.deactivate
+      expect(alice).not_to be_active
     end
   end
 end

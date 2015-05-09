@@ -14,3 +14,7 @@ end
 Fabricator(:admin, from: :user) do
   admin true
 end
+
+Fabricator(:locked_user, from: :user) do
+  active false
+end
