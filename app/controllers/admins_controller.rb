@@ -4,8 +4,7 @@ class AdminsController < ApplicationController
 
   def require_admin
     unless current_user.admin?
-      flash[:danger] = "You can't access this area."
-      redirect_to home_path
+      redirect_to home_path, danger: "You can't access this area."
     end
   end
 end

@@ -12,6 +12,9 @@ Myflix::Application.routes.draw do
   get 'my_queue', to: 'queue_items#index'
   get 'people', to: 'followees#index'
   get 'invite', to: 'invitations#new'
+
+  mount StripeEvent::Engine, at: '/stripe_events'
+
   resources :videos, only: [:show] do
     collection do
       get 'search'
@@ -33,5 +36,6 @@ Myflix::Application.routes.draw do
 
   namespace :admin do
     resources :videos, only: [:new, :create]
+    resources :payments, only: [:index]
   end
 end

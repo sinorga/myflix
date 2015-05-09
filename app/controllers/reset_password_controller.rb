@@ -10,8 +10,7 @@ class ResetPasswordController < ApplicationController
     if @user
       if @user.update(password: params[:password])
         @user.clear_password_reset_token
-        flash[:success] = "Update password success"
-        redirect_to sign_in_path
+        redirect_to sign_in_path, success: "Update password success"
       else
         flash.now[:danger] = "Password can't be blank"
         render :edit

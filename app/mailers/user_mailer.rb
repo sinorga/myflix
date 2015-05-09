@@ -15,6 +15,12 @@ class UserMailer < ActionMailer::Base
     mail to: send_to(invitation), subject: "mylifx, #{invitation.inviter.full_name} invite you!"
   end
 
+  def charge_failed_notify(user, message)
+    @user = user
+    @message = message
+    mail to: send_to(user), subject: "mylifx charge failed"
+  end
+
   protected
   def send_to(target)
     Rails.env.staging? ? ENV['STAGING_EMAIL'] : target.email

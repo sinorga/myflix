@@ -16,21 +16,38 @@ describe SessionsController do
 
   describe "POST create" do
     context "with vaild credentials" do
-      let(:user) { Fabricate(:user) }
       before do
         post :create, email: user.email, password: user.password
       end
+      context "with activated user" do
+        let(:user) { Fabricate(:user) }
 
-      it "signs in the user in the session" do
-        expect(session[:user_id]).to eq(user.id)
+        it "signs in the user in the session" do
+          expect(session[:user_id]).to eq(user.id)
+        end
+
+        it "flashes success message" do
+          expect(flash[:success]).not_to be_blank
+        end
+
+        it "redirects to home page" do
+          expect(response).to redirect_to home_path
+        end
       end
+      context "with locked user" do
+        let(:user) { Fabricate(:locked_user) }
 
-      it "flashes success message" do
-        expect(flash[:success]).not_to be_blank
-      end
+        it "does not sign in user in the session" do
+          expect(session[:user_id]).to be_nil
+        end
 
-      it "redirects to home page" do
-        expect(response).to redirect_to home_path
+        it "flashes error message" do
+          expect(flash[:danger]).not_to be_blank
+        end
+
+        it "redirects to sign in page" do
+          expect(response).to redirect_to sign_in_path
+        end
       end
     end
 

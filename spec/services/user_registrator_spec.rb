@@ -9,7 +9,11 @@ describe UserRegistrator do
       let(:user) { Fabricate(:user) }
       let(:registrator) { UserRegistrator.new(user) }
       before do
-        expect(StripeWrapper::Charge).to receive(:create)
+        expect(StripeWrapper::Customer).to receive(:create)
+        .with(
+          source: "xxxxxxxxxxxxx",
+          user: user
+        ).and_return(StripeWrapper::Customer.new("cus_xxxxxxxx"))
       end
 
       it "creates user record" do
@@ -18,6 +22,7 @@ describe UserRegistrator do
         expect(User.first.email).to eq(user.email)
         expect(User.first.authenticate(user.password)).not_to eq(false)
         expect(User.first.full_name).to eq(user.full_name)
+        expect(User.first.stripe_id).to eq("cus_xxxxxxxx")
       end
 
       it "returns self with success status" do
@@ -52,12 +57,11 @@ describe UserRegistrator do
         UserRegistrator.new(bob)
       end
       before do
-        expect(StripeWrapper::Charge).to receive(:create)
+        expect(StripeWrapper::Customer).to receive(:create)
           .with(
-            :amount => 999,
-            :source => "xxxxxxxxxxxxx",
-            :description => "payment of #{bob.email}"
-          )
+            source: "xxxxxxxxxxxxx",
+            user: bob
+          ).and_return(StripeWrapper::Customer.new("cus_xxxxxxxx"))
         registrator.register("xxxxxxxxxxxxx", invitation_from_alice.token)
       end
 
@@ -80,11 +84,10 @@ describe UserRegistrator do
       let(:user) { Fabricate.build(:user) }
       let(:registrator) { UserRegistrator.new(user) }
       before do
-        expect(StripeWrapper::Charge).to receive(:create)
+        expect(StripeWrapper::Customer).to receive(:create)
           .with(
-            :amount => 999,
-            :source => "12341234",
-            :description => "payment of #{user.email}"
+            source: "12341234",
+            user: user
           ).and_raise(StripeWrapper::CardError)
       end
 
@@ -111,7 +114,7 @@ describe UserRegistrator do
       let(:user) { Fabricate.build(:invalid_user) }
       let(:registrator) { UserRegistrator.new(user) }
       before do
-        expect(StripeWrapper::Charge).not_to receive(:create)
+        expect(StripeWrapper::Customer).not_to receive(:create)
       end
 
       it "dose not create user record" do

@@ -38,11 +38,11 @@ class UserRegistrator
   end
 
   def stripe_payment!(stripe_token)
-    charge = StripeWrapper::Charge.create(
-      :amount => 999, # amount in cents, again
-      :source => stripe_token,
-      :description => "payment of #{user.email}"
+    customer = StripeWrapper::Customer.create(
+      source: stripe_token,
+      user: user
     )
+    user.update!(stripe_id: customer.customer_id)
   end
 
   def welcome
